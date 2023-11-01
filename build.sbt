@@ -49,3 +49,6 @@ def linkerOutputDirectory(v: Attributed[org.scalajs.linker.interface.Report]): F
 }
 
 lazy val elideBelowWarning = Seq("-Xelide-below", "WARNING")
+reversi / libraryDependencies ++= Seq(
+  "org.scalatest" %% "scalatest" % "latest.integration" % Test
+)
