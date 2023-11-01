@@ -30,6 +30,7 @@ lazy val `reversi` = project
     },
     libraryDependencies ++= Seq(
       "com.raquo" %%% "laminar" % Settings.versions.laminar,
+      "org.scalatest" %%% "scalatest" % Settings.versions.scalaTest % "test",
     ),
 
     // use uTest framework for tests
