@@ -1,4 +1,4 @@
-package software.kes.reversi
+package reversi
 
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 

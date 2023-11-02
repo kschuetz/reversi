@@ -1,4 +1,4 @@
-package software.kes.reversi
+package reversi
 
 object Dummy {
   def value: String = "Hello world!"

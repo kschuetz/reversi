@@ -26,7 +26,7 @@ lazy val `reversi` = project
     scalaJSUseMainModuleInitializer := true,
     scalaJSLinkerConfig ~= {
       _.withModuleKind(ModuleKind.ESModule)
-        .withModuleSplitStyle(ModuleSplitStyle.SmallModulesFor(List("checkers")))
+        .withModuleSplitStyle(ModuleSplitStyle.SmallModulesFor(List("reversi")))
     },
     libraryDependencies ++= Seq(
       "com.raquo" %%% "laminar" % Settings.versions.laminar,

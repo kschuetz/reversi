@@ -1,4 +1,4 @@
-package software.kes.reversi.core
+package reversi.core
 
 import scala.annotation.targetName
 

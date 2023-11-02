@@ -1,7 +1,8 @@
-package software.kes.reversi.core
+package reversi.core
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import reversi.core.BoardMask
 
 class BoardMaskTest extends AnyFunSpec with Matchers {
   describe("BoardMask") {

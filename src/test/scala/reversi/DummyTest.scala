@@ -1,4 +1,4 @@
-package software.kes.reversi
+package reversi
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
