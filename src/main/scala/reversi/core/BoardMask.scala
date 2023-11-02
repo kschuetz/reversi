@@ -11,10 +11,10 @@ object BoardMask {
 
   def apply(top: Int, bottom: Int): BoardMask = (bottom.toLong << 32) | top
 
-  inline def position(p: Int): BoardMask = 1.toLong << p
+  inline def square(i: SquareIndex): BoardMask = 1.toLong << i.toInt
 
-  def positions(ps: Int*): BoardMask = ps.foldLeft(0L) {
-    case (acc, p) => acc | position(p)
+  def squares(ps: SquareIndex*): BoardMask = ps.foldLeft(0L) {
+    case (acc, p) => acc | square(p)
   }
 
   extension (self: BoardMask) {
@@ -32,10 +32,14 @@ object BoardMask {
 
     inline def bottom: Int = (value >> 32).toInt
 
-    inline def isSet(position: Int): Boolean = (value & (1.toLong << position)) != 0
+    inline def isSet(i: SquareIndex): Boolean = (value & (1.toLong << i.toInt)) != 0
 
-    inline def set(position: Int): BoardMask = value | (1.toLong << position)
+    inline def set(i: SquareIndex): BoardMask = value | (1.toLong << i.toInt)
 
-    inline def clear(position: Int): BoardMask = value & (~(1.toLong << position))
+    inline def clear(i: SquareIndex): BoardMask = value & (~(1.toLong << i.toInt))
+
+    def foreach(f: SquareIndex => Unit): Unit =
+      SquareIndex.All.foreach(idx => if isSet(idx) then f(idx))
+
   }
 }
