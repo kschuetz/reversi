@@ -6,6 +6,8 @@ trait BoardStateRead {
   def pieces(color: Color): BoardMask
 
   def occupied: BoardMask
+
+  def unoccupied: BoardMask = occupied.complement
 }
 
 class BoardState(private val lightPieces: BoardMask,

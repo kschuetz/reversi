@@ -41,5 +41,40 @@ object BoardMask {
     def foreach(f: SquareIndex => Unit): Unit =
       SquareIndex.All.foreach(idx => if isSet(idx) then f(idx))
 
+    inline def shiftN: BoardMask = value >> 8
+
+    inline def shiftS: BoardMask = value << 8
+
+    inline def shiftE: BoardMask = (value << 1) & BoardMasks.EDGE_E.complement
+
+    inline def shiftW: BoardMask = (value >> 1) & BoardMasks.EDGE_W.complement
+
+    inline def shiftNE: BoardMask = (value >> 7) & BoardMasks.EDGE_NE.complement
+
+    inline def shiftSE: BoardMask = (value << 9) & BoardMasks.EDGE_SE.complement
+
+    inline def shiftSW: BoardMask = (value << 7) & BoardMasks.EDGE_SW.complement
+
+    inline def shiftNW: BoardMask = (value >> 9) & BoardMasks.EDGE_NW.complement
   }
+}
+
+object BoardMasks {
+  inline def EDGE_N: BoardMask = BoardMask(0xFF)
+
+  inline def EDGE_E: BoardMask = BoardMask(0x80L | (0x80L << 8) | (0x80L << 16) | (0x80L << 24) |
+    (0x80L << 32) | (0x80L << 40) | (0x80L << 48) | (0x80L << 56))
+
+  inline def EDGE_S: BoardMask = BoardMask(0xFFL << 56)
+
+  inline def EDGE_W: BoardMask = BoardMask(0x01L | (0x01L << 8) | (0x01L << 16) | (0x01L << 24) |
+    (0x01L << 32) | (0x01L << 40) | (0x01L << 48) | (0x01L << 56))
+
+  inline def EDGE_NE: BoardMask = EDGE_N | EDGE_E
+
+  inline def EDGE_SE: BoardMask = EDGE_S | EDGE_E
+
+  inline def EDGE_SW: BoardMask = EDGE_S | EDGE_W
+
+  inline def EDGE_NW: BoardMask = EDGE_N | EDGE_W
 }

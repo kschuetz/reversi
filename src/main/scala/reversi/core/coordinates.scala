@@ -19,6 +19,9 @@ object SquareIndex {
     if row.isInBounds && column.isInBounds then (row * 8) + column
     else OutOfBounds
 
+  def foreach(f: SquareIndex => Unit): Unit =
+    All.foreach(f)
+
   extension (self: SquareIndex) {
     def toInt: Int = self
 
