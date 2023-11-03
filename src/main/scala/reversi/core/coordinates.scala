@@ -2,6 +2,8 @@ package reversi.core
 
 import reversi.core.Direction.*
 
+import scala.scalajs.js.typedarray.Int32Array
+
 opaque type SquareIndex = Int
 
 object SquareIndex {
@@ -46,7 +48,28 @@ object SquareIndex {
         case W => at(row, column - 1)
         case NW => at(row - 1, column - 1)
       }
+
+    def neighborDirections: DirectionMask = DirectionMask(neighborDirectionLookup(toInt & 63))
   }
+
+  private val neighborDirectionLookup = new Int32Array(64)
+  All.foreach { si =>
+    var mask = 0
+    if si.row > 0 then {
+      mask = mask | DirectionMask.of(Direction.N).value
+    }
+    if si.row < 7 then {
+      mask = mask | DirectionMask.of(Direction.S).value
+    }
+    if si.column > 0 then {
+      mask = mask | DirectionMask.of(Direction.W).value
+    }
+    if si.column < 7 then {
+      mask = mask | DirectionMask.of(Direction.E).value
+    }
+    neighborDirectionLookup(si.toInt) = mask
+  }
+
 }
 
 opaque type Row = Int

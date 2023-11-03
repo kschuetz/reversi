@@ -1,5 +1,7 @@
 package reversi.core
 
+import reversi.core.Direction.*
+
 import scala.annotation.targetName
 
 opaque type BoardMask = Long
@@ -40,6 +42,18 @@ object BoardMask {
 
     def foreach(f: SquareIndex => Unit): Unit =
       SquareIndex.All.foreach(idx => if isSet(idx) then f(idx))
+
+    def shift(direction: Direction): BoardMask =
+      direction match {
+        case N => shiftN
+        case NE => shiftNE
+        case E => shiftE
+        case SE => shiftSE
+        case S => shiftS
+        case SW => shiftSW
+        case W => shiftW
+        case NW => shiftNW
+      }
 
     inline def shiftN: BoardMask = value >> 8
 
