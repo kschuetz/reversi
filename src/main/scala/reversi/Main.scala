@@ -21,7 +21,17 @@ object Main {
     js.Dynamic.global.window._reversiWasm.asInstanceOf[Promise[js.Dynamic]]
       .`then`(result => {
         println("Loaded")
-        println(result.exports.do_something(11, 12))
+
+        val coreApi = result.exports.asInstanceOf[CoreApi]
+        println(coreApi.getSeedHi())
+        println(coreApi.getSeedLo())
+
+        coreApi.setSeedHi(876543)
+        coreApi.setSeedLo(987654)
+
+        println(coreApi.getSeedHi())
+        println(coreApi.getSeedLo())
+        //        println(result.exports.do_something(11, 12))
       })
   }
 
