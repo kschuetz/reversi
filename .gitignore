@@ -54,3 +54,6 @@ node_modules
 
 ### WASM ###
 reversi.wasm
+
+### Zig ###
+zig-cache/

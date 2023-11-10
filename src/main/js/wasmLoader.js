@@ -1,4 +1,4 @@
-import init from '../zig/reversi/reversi.wasm?init';
+import init from '../zig/zig-out/lib/reversi.wasm?init';
 
 window._reversiWasm = init();
 
