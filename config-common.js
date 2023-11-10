@@ -24,3 +24,22 @@ export function printSbtTask(task, devMode) {
         throw new Error(`sbt process failed with exit code ${result.status}`);
     return result.stdout.toString('utf8').trim();
 }
+
+export function buildCore(devMode) {
+    const options = {
+        shell: true,
+        cwd: "./src/main/zig",
+        stdio: [
+            "pipe", // StdIn.
+            "pipe", // StdOut.
+            "inherit", // StdErr.
+        ]
+    };
+
+    const result = spawnSync("zig", ["build"], options);
+
+    if (result.error)
+        throw result.error;
+    if (result.status !== 0)
+        throw new Error(`zig build process failed with exit code ${result.status}`);
+}
