@@ -3,16 +3,14 @@ package reversi.core
 import scala.scalajs.js
 
 @js.native
-trait CoreApi extends js.Object {
+trait EngineApi extends js.Object {
   def reset(): Unit = js.native
 
   def getSquareState(idx: Int): Int = js.native
 
   def setSquareState(idx: Int, value: Int): Unit = js.native
 
-  def setSeedHi(value: Int): Unit = js.native
-
-  def setSeedLo(value: Int): Unit = js.native
+  def setSeed(lo: Int, hi: Int): Unit = js.native
 
   def getSeedHi(): Int = js.native
 
@@ -29,4 +27,6 @@ trait CoreApi extends js.Object {
   def getPlayerMove(): Int = js.native
 
   def computeGameState(): Unit = js.native
+
+  def generateRandomInt(bound: Int): Int = js.native
 }

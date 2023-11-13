@@ -22,15 +22,15 @@ object Main {
       .`then`(result => {
         println("Loaded")
 
-        val coreApi = result.exports.asInstanceOf[CoreApi]
-        println(coreApi.getSeedHi())
-        println(coreApi.getSeedLo())
+        val engineApi = result.exports.asInstanceOf[EngineApi]
+        val engine = new Engine(engineApi)
+        engine.setSeed(Seed(987654, 876543))
 
-        coreApi.setSeedHi(876543)
-        coreApi.setSeedLo(987654)
+        for (_ <- 0 to 20) {
+          println(engineApi.generateRandomInt(11));
+        }
 
-        println(coreApi.getSeedHi())
-        println(coreApi.getSeedLo())
+        println(s"New seed: ${engine.getSeed}")
         //        println(result.exports.do_something(11, 12))
       })
   }

@@ -1,6 +1,6 @@
-const helper = @import("core/helper.zig");
+const random = @import("random.zig");
 
-var seed: u64 = 0;
+var seed: random.Seed = 0;
 
 export fn reset() void {}
 
@@ -15,20 +15,15 @@ export fn setSquareState(square_index: i32, state: i32) void {
 }
 
 export fn getSeedLo() u32 {
-    return @truncate(seed);
-}
-
-export fn setSeedLo(value: u32) void {
-    seed = seed & (0xFFFFFFFF00000000) | value;
+    return random.getSeedLo(seed);
 }
 
 export fn getSeedHi() u32 {
-    return @as(u32, @intCast(seed >> 32));
+    return random.getSeedHi(seed);
 }
 
-export fn setSeedHi(value: u32) void {
-    const foo = @as(u64, @intCast(value)) << 32;
-    seed = seed & (0x00000000FFFFFFFF) | foo;
+export fn setSeed(lo: u32, hi: u32) void {
+    seed = random.makeSeed(lo, hi);
 }
 
 export fn setCurrentPlayer(color: i32) void {
@@ -50,3 +45,10 @@ export fn getPlayerMove() i32 {
 }
 
 export fn computeGameState() void {}
+
+export fn generateRandomInt(bound: u32) u32 {
+    if (bound <= 0) return 0;
+    const out = random.generateInt(seed, bound);
+    seed = out.new_seed;
+    return out.value;
+}
