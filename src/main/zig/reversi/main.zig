@@ -1,33 +1,48 @@
+const common = @import("common.zig");
 const random = @import("random.zig");
+const board = @import("board.zig");
+const Board = board.Board;
 
-var seed: random.Seed = 0;
+// For interaction with frontend
+const Registers = struct {
+    seed: random.Seed = 0,
+    board: Board = Board.empty(),
+    current_player: common.Color = .Light,
 
-export fn reset() void {}
+    pub fn reset(self: *@This()) void {
+        self.board = Board.empty();
+        self.current_player = .Light;
+    }
+};
 
-export fn getSquareState(square_index: i32) i32 {
-    _ = square_index;
-    return 99;
+var registers: Registers = .{};
+
+export fn reset() void {
+    registers.reset();
 }
 
-export fn setSquareState(square_index: i32, state: i32) void {
-    _ = square_index;
-    _ = state;
+export fn getSquareState(square_index: u32) u32 {
+    return @intFromEnum(registers.board.getSquareState(@truncate(square_index)));
+}
+
+export fn setSquareState(square_index: u32, state: u32) void {
+    registers.board.setSquareState(@truncate(square_index), board.SquareState.fromInt(state));
 }
 
 export fn getSeedLo() u32 {
-    return random.getSeedLo(seed);
+    return random.getSeedLo(registers.seed);
 }
 
 export fn getSeedHi() u32 {
-    return random.getSeedHi(seed);
+    return random.getSeedHi(registers.seed);
 }
 
 export fn setSeed(lo: u32, hi: u32) void {
-    seed = random.makeSeed(lo, hi);
+    registers.seed = random.makeSeed(lo, hi);
 }
 
-export fn setCurrentPlayer(color: i32) void {
-    _ = color;
+export fn setCurrentPlayer(color: u32) void {
+    registers.current_player = common.Color.fromInt(color);
 }
 
 export fn computePlayerMove(max_cycles: i32) i32 {
@@ -48,7 +63,7 @@ export fn computeGameState() void {}
 
 export fn generateRandomInt(bound: u32) u32 {
     if (bound <= 0) return 0;
-    const out = random.generateInt(seed, bound);
-    seed = out.new_seed;
+    const out = random.generateInt(registers.seed, bound);
+    registers.seed = out.new_seed;
     return out.value;
 }
