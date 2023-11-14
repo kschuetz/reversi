@@ -2,15 +2,16 @@ const common = @import("common.zig");
 const random = @import("random.zig");
 const board = @import("board.zig");
 const Board = board.Board;
+const SquareIndex = board.SquareIndex;
 
 // For interaction with frontend
 const Registers = struct {
     seed: random.Seed = 0,
-    board: Board = Board.empty(),
+    board: Board = Board.empty,
     current_player: common.Color = .Light,
 
     pub fn reset(self: *@This()) void {
-        self.board = Board.empty();
+        self.board = Board.empty;
         self.current_player = .Light;
     }
 };
@@ -22,11 +23,11 @@ export fn reset() void {
 }
 
 export fn getSquareState(square_index: u32) u32 {
-    return @intFromEnum(registers.board.getSquareState(@truncate(square_index)));
+    return @intFromEnum(registers.board.getSquareState(SquareIndex.of(@truncate(square_index))));
 }
 
 export fn setSquareState(square_index: u32, state: u32) void {
-    registers.board.setSquareState(@truncate(square_index), board.SquareState.fromInt(state));
+    registers.board.setSquareState(SquareIndex.of(@truncate(square_index)), board.SquareState.fromInt(state));
 }
 
 export fn getSeedLo() u32 {
