@@ -1,13 +1,13 @@
 // Config for main application
 
 import {defineConfig} from "vite";
-import {buildCore, isDev, printSbtTask} from "./config-common.js";
+import {buildEngine, isDev, printSbtTask} from "./config-common.js";
 
 const replacementForPublic = isDev()
     ? printSbtTask("publicDev", true)
     : printSbtTask("publicProd", false);
 
-buildCore(isDev());
+buildEngine(isDev());
 
 export default defineConfig({
     resolve: {

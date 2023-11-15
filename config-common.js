@@ -25,10 +25,10 @@ export function printSbtTask(task, devMode) {
     return result.stdout.toString('utf8').trim();
 }
 
-export function buildCore(devMode) {
+export function buildEngine(devMode) {
     const options = {
         shell: true,
-        cwd: "./src/main/zig",
+        cwd: "./engine",
         stdio: [
             "pipe", // StdIn.
             "pipe", // StdOut.
