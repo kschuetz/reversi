@@ -3,8 +3,8 @@ package reversi.core
 import reversi.core.Color.{Dark, Light}
 
 enum Color {
-  case Light
   case Dark
+  case Light
 }
 
 extension (self: Color) {
