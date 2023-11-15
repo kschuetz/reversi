@@ -1,8 +1,7 @@
 const common = @import("common.zig");
 const random = @import("random.zig");
-const board = @import("board.zig");
-const Board = board.Board;
-const SquareIndex = board.SquareIndex;
+const Board = @import("board.zig").Board;
+const SquareIndex = common.SquareIndex;
 
 // For interaction with frontend
 const Registers = struct {
@@ -27,7 +26,7 @@ export fn getSquareState(square_index: u32) u32 {
 }
 
 export fn setSquareState(square_index: u32, state: u32) void {
-    registers.board.setSquareState(SquareIndex.of(@truncate(square_index)), board.SquareState.fromInt(state));
+    registers.board.setSquareState(SquareIndex.of(@truncate(square_index)), common.SquareState.fromInt(state));
 }
 
 export fn getSeedLo() u32 {
