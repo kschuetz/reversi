@@ -13,7 +13,7 @@ const Registers = struct {
     game_status: common.GameStatus = .InProgress,
     winner: common.Color = .Dark,
     legal_moves: BoardMask = BoardMask.empty,
-    power_balance: i32 = 0,
+    power_balance: f64 = 0,
 
     pub fn reset(self: *@This()) void {
         self.board = Board.empty;
@@ -55,6 +55,10 @@ export fn setCurrentPlayer(color: u32) void {
     registers.current_player = common.Color.fromInt(color);
 }
 
+export fn getCurrentPlayer() u32 {
+    return @intFromEnum(registers.current_player);
+}
+
 export fn computePlayerMove(max_cycles: i32) i32 {
     return max_cycles;
 }
@@ -81,7 +85,7 @@ export fn isLegalMove(square_index: u32) bool {
     return registers.legal_moves.isSet(SquareIndex.of(@truncate(square_index)));
 }
 
-export fn getPowerBalance() i32 {
+export fn getPowerBalance() f64 {
     return registers.power_balance;
 }
 

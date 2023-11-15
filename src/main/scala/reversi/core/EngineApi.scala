@@ -27,6 +27,11 @@ trait EngineApi extends js.Object {
    */
   def setCurrentPlayer(color: Int): Unit = js.native
 
+  /**
+   * @return color 0: dark, 1: light
+   */
+  def getCurrentPlayer(): Int = js.native
+
   def computePlayerMove(maxCycles: Int): Int = js.native
 
   def rush(): Unit = js.native
@@ -57,9 +62,9 @@ trait EngineApi extends js.Object {
   /**
    * Query the power balance after calling computeGameState().
    *
-   * @return negative: dark, positive: light
+   * @return -1 (dark advantage) .. 1 (light advantage)
    */
-  def getPowerBalance(): Int = js.native
+  def getPowerBalance(): Double = js.native
 
   def generateRandomInt(bound: Int): Int = js.native
 }

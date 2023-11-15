@@ -92,7 +92,6 @@ object Column {
   extension (self: Column) {
     def toInt: Int = self
 
-
     inline def isInBounds: Boolean = toInt >= Min && toInt <= Max
 
     def +(offset: Int): Column = toInt + offset
