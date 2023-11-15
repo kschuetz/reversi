@@ -2,16 +2,26 @@ const common = @import("common.zig");
 const random = @import("random.zig");
 const Board = @import("board.zig").Board;
 const SquareIndex = common.SquareIndex;
+const BoardMask = common.BoardMask;
+const movegen = @import("movegen.zig");
 
 // For interaction with frontend
 const Registers = struct {
     seed: random.Seed = 0,
     board: Board = Board.empty,
     current_player: common.Color = .Light,
+    game_status: common.GameStatus = .InProgress,
+    winner: common.Color = .Dark,
+    legal_moves: BoardMask = BoardMask.empty,
+    power_balance: i32 = 0,
 
     pub fn reset(self: *@This()) void {
         self.board = Board.empty;
-        self.current_player = .Light;
+        self.current_player = .Dark;
+        self.legal_moves = BoardMask.empty;
+        self.power_balance = 0;
+        self.game_status = .InProgress;
+        self.winner = .Dark;
     }
 };
 
@@ -59,7 +69,21 @@ export fn getPlayerMove() i32 {
     return 777;
 }
 
-export fn computeGameState() void {}
+export fn computeGameState() u32 {
+    return @intFromEnum(registers.game_status);
+}
+
+export fn getWinner() u32 {
+    return @intFromEnum(registers.winner);
+}
+
+export fn isLegalMove(square_index: u32) bool {
+    return registers.legal_moves.isSet(SquareIndex.of(@truncate(square_index)));
+}
+
+export fn getPowerBalance() i32 {
+    return registers.power_balance;
+}
 
 export fn generateRandomInt(bound: u32) u32 {
     if (bound <= 0) return 0;

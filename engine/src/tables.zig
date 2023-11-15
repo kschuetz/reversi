@@ -1,4 +1,6 @@
-usingnamespace @import("common.zig");
+const common = @import("common.zig");
+const Directions = common.Directions;
+const Direction = common.Direction;
 
 pub const neighbor_masks: [64]Directions = blk: {
     var arr: [64]Directions = undefined;

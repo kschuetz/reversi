@@ -5,20 +5,20 @@ const SquareIndex = common.SquareIndex;
 const SquareState = common.SquareState;
 
 pub const Board = struct {
-    light: BoardMask,
     dark: BoardMask,
+    light: BoardMask,
 
     pub const empty: Board = .{
-        .light = BoardMask.empty,
         .dark = BoardMask.empty,
+        .light = BoardMask.empty,
     };
 
     pub fn getSquareState(self: *const @This(), square_index: SquareIndex) SquareState {
         const mask = square_index.select();
-        if (self.light.containsAll(mask)) {
-            return .Light;
-        } else if (self.dark.containsAll(mask)) {
+        if (self.dark.containsAll(mask)) {
             return .Dark;
+        } else if (self.light.containsAll(mask)) {
+            return .Light;
         } else {
             return .Empty;
         }
@@ -29,29 +29,29 @@ pub const Board = struct {
         const complement = mask.complement();
         switch (state) {
             .Empty => {
+                self.dark = self.dark.intersect(complement);
                 self.light = self.light.intersect(complement);
-                self.dark = self.dark.intersect(complement);
-            },
-            .Light => {
-                self.light = self.light.combine(mask);
-                self.dark = self.dark.intersect(complement);
             },
             .Dark => {
-                self.light = self.light.intersect(complement);
                 self.dark = self.dark.combine(mask);
+                self.light = self.light.intersect(complement);
+            },
+            .Light => {
+                self.dark = self.dark.intersect(complement);
+                self.light = self.light.combine(mask);
             },
         }
     }
 
     pub inline fn pieces(self: *@This(), player: common.Color) BoardMask {
         return switch (player) {
-            .Light => self.light,
             .Dark => self.dark,
+            .Light => self.light,
         };
     }
 
     pub fn occupiedSquares(self: *@This()) BoardMask {
-        return (self.light | self.dark);
+        return (self.dark | self.light);
     }
 
     pub fn unoccupiedSquares(self: *@This()) BoardMask {

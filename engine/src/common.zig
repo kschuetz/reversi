@@ -1,9 +1,9 @@
 pub const Color = enum(u1) {
+    Dark = 0,
     Light,
-    Dark,
 
     pub fn fromInt(input: u32) Color {
-        return if (input & 1 == 0) .Light else .Dark;
+        return if (input & 1 == 0) .Dark else .Light;
     }
 
     pub inline fn opponent(self: @This()) Color {
@@ -12,6 +12,12 @@ pub const Color = enum(u1) {
             .Dark => .Light,
         };
     }
+};
+
+pub const GameStatus = enum(u2) {
+    InProgress = 0,
+    Win,
+    Draw,
 };
 
 pub const Directions = u4;
@@ -75,7 +81,7 @@ pub const BoardMask = struct {
     }
 
     pub inline fn isSet(self: @This(), square_index: SquareIndex) bool {
-        return (self.value & square_index.select()) != 0;
+        return (self.value & square_index.select().value) != 0;
     }
 
     pub inline fn complement(self: @This()) BoardMask {
@@ -93,6 +99,43 @@ pub const BoardMask = struct {
     pub inline fn containsAll(self: @This(), other: BoardMask) bool {
         return self.value & other.value != 0;
     }
+
+    pub inline fn shift(self: @This(), dir: Direction) BoardMask {
+        return switch (dir) {
+            .N => of(self.value >> 8),
+            .NE => of(self.value >> 7).intersect(BoardMasks.EDGE_SW.complement),
+            .E => of(self.value << 1).intersect(BoardMasks.EDGE_W.complement),
+            .SE => of(self.value << 9).intersect(BoardMasks.EDGE_NW.complement),
+            .S => of(self.value << 8),
+            .SW => of(self.value << 7).intersect(BoardMasks.EDGE_NE.complement),
+            .W => of(self.value >> 1).intersect(BoardMasks.EDGE_E.complement),
+            .NW => of(self.value >> 9).intersect(BoardMasks.EDGE_SE.complement),
+        };
+    }
+};
+
+const BoardMasks = struct {
+    const N: u64 = 0xFF;
+    const E: u64 = 0x80;
+    const W: u64 = 0x01;
+
+    pub const EDGE_N: BoardMask = BoardMask.of(0xFF);
+
+    pub const EDGE_E: BoardMask = BoardMask.of(E | (E << 8) | (E << 16) | (E << 24) |
+        (E << 32) | (E << 40) | (E << 48) | (E << 56));
+
+    pub const EDGE_S: BoardMask = BoardMask.of(N << 56);
+
+    pub const EDGE_W: BoardMask = BoardMask.of(W | (W << 8) | (W << 16) | (W << 24) |
+        (W << 32) | (W << 40) | (W << 48) | (W << 56));
+
+    pub const EDGE_NE = EDGE_N.combine(EDGE_E);
+
+    pub const EDGE_SE = EDGE_S.combine(EDGE_E);
+
+    pub const EDGE_SW = EDGE_S.combine(EDGE_W);
+
+    pub const EDGE_NW = EDGE_N.combine(EDGE_W);
 };
 
 pub const SquareIndex = struct {
@@ -111,15 +154,15 @@ pub const SquareIndex = struct {
 
 pub const SquareState = enum(u2) {
     Empty = 0,
-    Light = 1,
-    Dark = 2,
+    Dark = 1,
+    Light = 2,
 
     pub fn fromInt(input: u32) SquareState {
         return switch (input & 3) {
             0 => .Empty,
-            1 => .Light,
-            2 => .Dark,
-            else => .Light,
+            1 => .Dark,
+            2 => .Light,
+            else => .Dark,
         };
     }
 };
