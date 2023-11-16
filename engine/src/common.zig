@@ -80,6 +80,10 @@ pub const BoardMask = struct {
         return .{ .value = mask };
     }
 
+    pub inline fn isEmpty(self: @This()) bool {
+        return self.value == 0;
+    }
+
     pub inline fn isSet(self: @This(), square_index: SquareIndex) bool {
         return (self.value & square_index.select().value) != 0;
     }
@@ -103,14 +107,26 @@ pub const BoardMask = struct {
     pub inline fn shift(self: @This(), dir: Direction) BoardMask {
         return switch (dir) {
             .N => of(self.value >> 8),
-            .NE => of(self.value >> 7).intersect(BoardMasks.EDGE_SW.complement),
-            .E => of(self.value << 1).intersect(BoardMasks.EDGE_W.complement),
-            .SE => of(self.value << 9).intersect(BoardMasks.EDGE_NW.complement),
+            .NE => of(self.value >> 7).intersect(BoardMasks.EDGE_SW.complement()),
+            .E => of(self.value << 1).intersect(BoardMasks.EDGE_W.complement()),
+            .SE => of(self.value << 9).intersect(BoardMasks.EDGE_NW.complement()),
             .S => of(self.value << 8),
-            .SW => of(self.value << 7).intersect(BoardMasks.EDGE_NE.complement),
-            .W => of(self.value >> 1).intersect(BoardMasks.EDGE_E.complement),
-            .NW => of(self.value >> 9).intersect(BoardMasks.EDGE_SE.complement),
+            .SW => of(self.value << 7).intersect(BoardMasks.EDGE_NE.complement()),
+            .W => of(self.value >> 1).intersect(BoardMasks.EDGE_E.complement()),
+            .NW => of(self.value >> 9).intersect(BoardMasks.EDGE_SE.complement()),
         };
+    }
+
+    pub fn count(self: @This()) u8 {
+        var current = self.value;
+        var result: u8 = 0;
+        for (0..64) |_| {
+            if (current & 1 == 1) {
+                result += 1;
+            }
+            current = current >> 1;
+        }
+        return result;
     }
 };
 
@@ -143,8 +159,8 @@ pub const SquareIndex = struct {
 
     pub const max = .{ .value = 63 };
 
-    pub inline fn of(si: u6) SquareIndex {
-        return .{ .value = si };
+    pub inline fn of(si: u32) SquareIndex {
+        return .{ .value = @truncate(si) };
     }
 
     pub inline fn select(self: @This()) BoardMask {

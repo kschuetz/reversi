@@ -50,11 +50,11 @@ pub const Board = struct {
         };
     }
 
-    pub fn occupiedSquares(self: *@This()) BoardMask {
-        return (self.dark | self.light);
+    pub inline fn occupiedSquares(self: *@This()) BoardMask {
+        return (self.dark.combine(self.light));
     }
 
     pub fn unoccupiedSquares(self: *@This()) BoardMask {
-        return ~self.occupiedSquares();
+        return self.occupiedSquares().complement();
     }
 };

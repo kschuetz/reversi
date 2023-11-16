@@ -19,14 +19,9 @@ object Main {
 
         val engineApi = result.exports.asInstanceOf[EngineApi]
         val engine = new Engine(engineApi)
-        engine.setSeed(Seed(987654, 876543))
 
-        for (_ <- 0 to 20) {
-          println(engineApi.generateRandomInt(11))
-        }
-
-        println(s"New seed: ${engine.getSeed}")
-        //        println(result.exports.do_something(11, 12))
+        println(engine.evaluateGameState(Color.Dark, BoardState.StandardStart))
+        println(engine.evaluateGameState(Color.Light, BoardState.StandardStart))
       })
   }
 

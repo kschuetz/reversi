@@ -74,6 +74,29 @@ export fn getPlayerMove() i32 {
 }
 
 export fn computeGameState() u32 {
+    const legal_moves1 = movegen.generateMoves(registers.current_player, &registers.board);
+    if (legal_moves1.isEmpty()) {
+        const player = registers.current_player.opponent();
+        const legal_moves2 = movegen.generateMoves(player, &registers.board);
+        if (legal_moves2.isEmpty()) {
+            // game over
+            const dark_score = registers.board.dark.count();
+            const light_score = registers.board.light.count();
+            if (dark_score == light_score) {
+                registers.game_status = .Draw;
+            } else {
+                registers.game_status = .Win;
+                registers.winner = if (dark_score > light_score) .Dark else .Light;
+            }
+        } else {
+            registers.game_status = .InProgress;
+            registers.legal_moves = legal_moves2;
+            registers.current_player = player;
+        }
+    } else {
+        registers.game_status = .InProgress;
+        registers.legal_moves = legal_moves1;
+    }
     return @intFromEnum(registers.game_status);
 }
 

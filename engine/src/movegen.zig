@@ -7,20 +7,20 @@ const Board = @import("board.zig").Board;
 const tables = @import("tables.zig");
 
 pub fn generateMoves(player: Color, board: *Board) BoardMask {
-    var result: BoardMask = 0;
+    var result: BoardMask = BoardMask.empty;
     const my_pieces = board.pieces(player);
     const opponent_pieces = board.pieces(player.opponent());
     const unoccupied = board.unoccupiedSquares();
     for (0..64) |i| {
         const si = SquareIndex.of(i);
         if (unoccupied.isSet(si)) {
-            const neighbors = tables.neighbor_masks[si];
+            const neighbors = tables.neighbor_masks[si.value];
             for (0..7) |d| {
-                const dir = @as(Direction, d);
+                const dir: Direction = @enumFromInt(d);
                 if (dir.isInMask(neighbors)) {
                     const shift_dir = dir.opposite();
                     if (walk(si, my_pieces, opponent_pieces, shift_dir)) {
-                        result = result | si.select();
+                        result = result.combine(si.select());
                         break;
                     }
                 }
