@@ -22,6 +22,10 @@ object Main {
 
         println(engine.evaluateGameState(Color.Dark, BoardState.StandardStart))
         println(engine.evaluateGameState(Color.Light, BoardState.StandardStart))
+        println(engine.evaluateGameState(Color.Dark, BoardState.empty.set(SquareIndex(28), Color.Dark)))
+        println(engine.evaluateGameState(Color.Light, BoardState.empty.set(SquareIndex(28), Color.Dark)))
+        println(engine.evaluateGameState(Color.Light, BoardState.empty.set(SquareIndex(28), Color.Light)))
+        println(engine.evaluateGameState(Color.Dark, BoardState.empty))
       })
   }
 

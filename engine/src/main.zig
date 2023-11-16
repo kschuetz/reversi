@@ -3,25 +3,17 @@ const random = @import("random.zig");
 const Board = @import("board.zig").Board;
 const SquareIndex = common.SquareIndex;
 const BoardMask = common.BoardMask;
-const movegen = @import("movegen.zig");
+const GameState = @import("gamestate.zig").GameState;
 
 // For interaction with frontend
 const Registers = struct {
     seed: random.Seed = 0,
     board: Board = Board.empty,
-    current_player: common.Color = .Light,
-    game_status: common.GameStatus = .InProgress,
-    winner: common.Color = .Dark,
-    legal_moves: BoardMask = BoardMask.empty,
-    power_balance: f64 = 0,
+    game_state: GameState = .{},
 
     pub fn reset(self: *@This()) void {
         self.board = Board.empty;
-        self.current_player = .Dark;
-        self.legal_moves = BoardMask.empty;
-        self.power_balance = 0;
-        self.game_status = .InProgress;
-        self.winner = .Dark;
+        self.game_state = .{};
     }
 };
 
@@ -52,11 +44,11 @@ export fn setSeed(lo: u32, hi: u32) void {
 }
 
 export fn setCurrentPlayer(color: u32) void {
-    registers.current_player = common.Color.fromInt(color);
+    registers.game_state.player = common.Color.fromInt(color);
 }
 
 export fn getCurrentPlayer() u32 {
-    return @intFromEnum(registers.current_player);
+    return @intFromEnum(registers.game_state.player);
 }
 
 export fn computePlayerMove(max_cycles: i32) i32 {
@@ -74,42 +66,21 @@ export fn getPlayerMove() i32 {
 }
 
 export fn computeGameState() u32 {
-    const legal_moves1 = movegen.generateMoves(registers.current_player, &registers.board);
-    if (legal_moves1.isEmpty()) {
-        const player = registers.current_player.opponent();
-        const legal_moves2 = movegen.generateMoves(player, &registers.board);
-        if (legal_moves2.isEmpty()) {
-            // game over
-            const dark_score = registers.board.dark.count();
-            const light_score = registers.board.light.count();
-            if (dark_score == light_score) {
-                registers.game_status = .Draw;
-            } else {
-                registers.game_status = .Win;
-                registers.winner = if (dark_score > light_score) .Dark else .Light;
-            }
-        } else {
-            registers.game_status = .InProgress;
-            registers.legal_moves = legal_moves2;
-            registers.current_player = player;
-        }
-    } else {
-        registers.game_status = .InProgress;
-        registers.legal_moves = legal_moves1;
-    }
-    return @intFromEnum(registers.game_status);
+    const state = GameState.compute(&registers.board, registers.game_state.player);
+    registers.game_state = state;
+    return @intFromEnum(registers.game_state.status);
 }
 
 export fn getWinner() u32 {
-    return @intFromEnum(registers.winner);
+    return @intFromEnum(registers.game_state.player);
 }
 
 export fn isLegalMove(square_index: u32) bool {
-    return registers.legal_moves.isSet(SquareIndex.of(@truncate(square_index)));
+    return registers.game_state.legal_moves.isSet(SquareIndex.of(@truncate(square_index)));
 }
 
 export fn getPowerBalance() f64 {
-    return registers.power_balance;
+    return registers.game_state.power_balance;
 }
 
 export fn generateRandomInt(bound: u32) u32 {
