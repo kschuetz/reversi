@@ -80,6 +80,14 @@ pub const BoardMask = struct {
         return .{ .value = mask };
     }
 
+    pub fn squares(list: []const u32) BoardMask {
+        var result = BoardMask.empty;
+        for (list) |si| {
+            result = result.combine(SquareIndex.of(si).select());
+        }
+        return result;
+    }
+
     pub inline fn isEmpty(self: @This()) bool {
         return self.value == 0;
     }
@@ -127,6 +135,10 @@ pub const BoardMask = struct {
             current = current >> 1;
         }
         return result;
+    }
+
+    pub inline fn equals(self: @This(), other: @This()) bool {
+        return self.value == other.value;
     }
 };
 

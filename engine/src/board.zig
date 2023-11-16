@@ -13,6 +13,11 @@ pub const Board = struct {
         .light = BoardMask.empty,
     };
 
+    pub const standardStart: Board = .{
+        .dark = BoardMask.squares(&[_]u32{ 28, 35 }),
+        .light = BoardMask.squares(&[_]u32{ 27, 36 }),
+    };
+
     pub fn getSquareState(self: *const @This(), square_index: SquareIndex) SquareState {
         const mask = square_index.select();
         if (self.dark.containsAll(mask)) {
@@ -43,18 +48,40 @@ pub const Board = struct {
         }
     }
 
-    pub inline fn pieces(self: *@This(), player: common.Color) BoardMask {
+    pub inline fn pieces(self: *const @This(), player: common.Color) BoardMask {
         return switch (player) {
             .Dark => self.dark,
             .Light => self.light,
         };
     }
 
-    pub inline fn occupiedSquares(self: *@This()) BoardMask {
+    pub inline fn occupiedSquares(self: *const @This()) BoardMask {
         return (self.dark.combine(self.light));
     }
 
-    pub fn unoccupiedSquares(self: *@This()) BoardMask {
+    pub fn unoccupiedSquares(self: *const @This()) BoardMask {
         return self.occupiedSquares().complement();
+    }
+};
+
+pub const BoardBuilder = struct {
+    board: Board,
+
+    pub fn new() BoardBuilder {
+        return .{ .board = Board.empty };
+    }
+
+    pub fn dark(self: *@This(), square_index: u32) *@This() {
+        self.board.setSquareState(SquareIndex.of(square_index), .Dark);
+        return self;
+    }
+
+    pub fn light(self: *@This(), square_index: u32) *@This() {
+        self.board.setSquareState(SquareIndex.of(square_index), .Dark);
+        return self;
+    }
+
+    pub fn build(self: *@This()) Board {
+        return self.board;
     }
 };
