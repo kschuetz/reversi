@@ -1,22 +1,22 @@
 package reversi.core
 
-sealed trait GameState {
+sealed trait BeginTurnEvaluation {
   def powerBalance: Power
 }
 
-object GameState {
+object BeginTurnEvaluation {
   case class InProgress(turnToPlay: Color,
                         legalMoves: Set[SquareIndex],
-                        powerBalance: Power) extends GameState
+                        powerBalance: Power) extends BeginTurnEvaluation
 
-  case class Win(winner: Color) extends GameState {
+  case class Win(winner: Color) extends BeginTurnEvaluation {
     def powerBalance: Power = winner match {
       case Color.Dark => Power.DarkWin
       case Color.Light => Power.LightWin
     }
   }
 
-  case object Draw extends GameState {
+  case object Draw extends BeginTurnEvaluation {
     def powerBalance: Power = Power.Even
   }
 }

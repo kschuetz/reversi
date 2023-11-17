@@ -3,17 +3,17 @@ const random = @import("random.zig");
 const Board = @import("board.zig").Board;
 const SquareIndex = common.SquareIndex;
 const BoardMask = common.BoardMask;
-const GameState = @import("gamestate.zig").GameState;
+const BeginTurnEvaluation = @import("begin_turn_evaluation.zig").BeginTurnEvaluation;
 
 // For interaction with frontend
 const Registers = struct {
     seed: random.Seed = 0,
     board: Board = Board.empty,
-    game_state: GameState = .{},
+    begin_turn_evaluation: BeginTurnEvaluation = .{},
 
     pub fn reset(self: *@This()) void {
         self.board = Board.empty;
-        self.game_state = .{};
+        self.begin_turn_evaluation = .{};
     }
 };
 
@@ -44,11 +44,11 @@ export fn setSeed(lo: u32, hi: u32) void {
 }
 
 export fn setCurrentPlayer(color: u32) void {
-    registers.game_state.player = common.Color.fromInt(color);
+    registers.begin_turn_evaluation.player = common.Color.fromInt(color);
 }
 
 export fn getCurrentPlayer() u32 {
-    return @intFromEnum(registers.game_state.player);
+    return @intFromEnum(registers.begin_turn_evaluation.player);
 }
 
 export fn computePlayerMove(max_cycles: i32) i32 {
@@ -65,22 +65,22 @@ export fn getPlayerMove() i32 {
     return 777;
 }
 
-export fn computeGameState() u32 {
-    const state = GameState.compute(&registers.board, registers.game_state.player);
-    registers.game_state = state;
-    return @intFromEnum(registers.game_state.status);
+export fn computeBeginTurnEvaluation() u32 {
+    const result = BeginTurnEvaluation.compute(&registers.board, registers.begin_turn_evaluation.player);
+    registers.begin_turn_evaluation = result;
+    return @intFromEnum(registers.begin_turn_evaluation.status);
 }
 
 export fn getWinner() u32 {
-    return @intFromEnum(registers.game_state.player);
+    return @intFromEnum(registers.begin_turn_evaluation.player);
 }
 
 export fn isLegalMove(square_index: u32) bool {
-    return registers.game_state.legal_moves.isSet(SquareIndex.of(@truncate(square_index)));
+    return registers.begin_turn_evaluation.legal_moves.isSet(SquareIndex.of(@truncate(square_index)));
 }
 
 export fn getPowerBalance() f64 {
-    return registers.game_state.power_balance;
+    return registers.begin_turn_evaluation.power_balance;
 }
 
 export fn generateRandomInt(bound: u32) u32 {

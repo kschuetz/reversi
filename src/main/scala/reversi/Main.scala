@@ -20,12 +20,12 @@ object Main {
         val engineApi = result.exports.asInstanceOf[EngineApi]
         val engine = new Engine(engineApi)
 
-        println(engine.evaluateGameState(Color.Dark, BoardState.StandardStart))
-        println(engine.evaluateGameState(Color.Light, BoardState.StandardStart))
-        println(engine.evaluateGameState(Color.Dark, BoardState.empty.set(SquareIndex(28), Color.Dark)))
-        println(engine.evaluateGameState(Color.Light, BoardState.empty.set(SquareIndex(28), Color.Dark)))
-        println(engine.evaluateGameState(Color.Light, BoardState.empty.set(SquareIndex(28), Color.Light)))
-        println(engine.evaluateGameState(Color.Dark, BoardState.empty))
+        println(engine.computeBeginTurnEvaluation(Color.Dark, BoardState.StandardStart))
+        println(engine.computeBeginTurnEvaluation(Color.Light, BoardState.StandardStart))
+        println(engine.computeBeginTurnEvaluation(Color.Dark, BoardState.empty.set(SquareIndex(28), Color.Dark)))
+        println(engine.computeBeginTurnEvaluation(Color.Light, BoardState.empty.set(SquareIndex(28), Color.Dark)))
+        println(engine.computeBeginTurnEvaluation(Color.Light, BoardState.empty.set(SquareIndex(28), Color.Light)))
+        println(engine.computeBeginTurnEvaluation(Color.Dark, BoardState.empty))
       })
   }
 

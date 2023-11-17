@@ -12,7 +12,7 @@ final class Engine(engineApi: EngineApi) {
   def generateRandomInt(bound: Int): Int =
     engineApi.generateRandomInt(bound)
 
-  def evaluateGameState(turn: Color, boardState: BoardState): GameState = {
+  def computeBeginTurnEvaluation(turn: Color, boardState: BoardState): BeginTurnEvaluation = {
     engineApi.reset()
     SquareIndex.All.foreach { si =>
       boardState.get(si) match {
@@ -21,12 +21,12 @@ final class Engine(engineApi: EngineApi) {
       }
     }
     engineApi.setCurrentPlayer(encodePlayer(turn))
-    engineApi.computeGameState() match {
+    engineApi.computeBeginTurnEvaluation() match {
       case 1 =>
         val winner = engineApi.getWinner()
-        GameState.Win(decodePlayer(winner))
+        BeginTurnEvaluation.Win(decodePlayer(winner))
       case 2 =>
-        GameState.Draw
+        BeginTurnEvaluation.Draw
       case _ =>
         val turnToPlay = decodePlayer(engineApi.getCurrentPlayer())
         val legalMoves = SquareIndex.All.foldLeft(Set.empty[SquareIndex]) {
@@ -34,7 +34,7 @@ final class Engine(engineApi: EngineApi) {
             if engineApi.isLegalMove(si.toInt) != 0 then acc + si else acc
         }
         val powerBalance = Power(engineApi.getPowerBalance())
-        GameState.InProgress(turnToPlay, legalMoves, powerBalance)
+        BeginTurnEvaluation.InProgress(turnToPlay, legalMoves, powerBalance)
     }
   }
 

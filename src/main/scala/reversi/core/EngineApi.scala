@@ -45,22 +45,22 @@ trait EngineApi extends js.Object {
    *
    * @return 0: game in progress; 1: win (query getWinner() for result); 2: draw
    */
-  def computeGameState(): Int = js.native
+  def computeBeginTurnEvaluation(): Int = js.native
 
   /**
-   * Query the winner in the case of a win. Only meaningful if computeGameState() returned 1 (win).
+   * Query the winner in the case of a win. Only meaningful if computeBeginTurnEvaluation() returned 1 (win).
    *
    * @return 0: dark; 1: light
    */
   def getWinner(): Int = js.native
 
   /**
-   * Query if a square is a legal move. Only meaningful if computeGameState() returns 0 (game in progress).
+   * Query if a square is a legal move. Only meaningful if computeBeginTurnEvaluation() returns 0 (game in progress).
    */
   def isLegalMove(idx: Int): Int = js.native
 
   /**
-   * Query the power balance after calling computeGameState().
+   * Query the power balance after calling computeBeginTurnEvaluation().
    *
    * @return -1 (dark advantage) .. 1 (light advantage)
    */

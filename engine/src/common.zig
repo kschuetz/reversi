@@ -14,7 +14,7 @@ pub const Color = enum(u1) {
     }
 };
 
-pub const GameStatus = enum(u2) {
+pub const Status = enum(u2) {
     InProgress = 0,
     Win,
     Draw,
