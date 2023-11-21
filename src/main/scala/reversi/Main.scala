@@ -26,6 +26,7 @@ object Main {
         println(engine.computeBeginTurnEvaluation(Color.Light, BoardState.empty.set(SquareIndex(28), Color.Dark)))
         println(engine.computeBeginTurnEvaluation(Color.Light, BoardState.empty.set(SquareIndex(28), Color.Light)))
         println(engine.computeBeginTurnEvaluation(Color.Dark, BoardState.empty))
+        logger.log.info("Hello world!")
       })
   }
 
