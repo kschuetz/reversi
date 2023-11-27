@@ -1,4 +1,4 @@
-package reversi.ui.components
+package reversi.ui.board
 
 import com.raquo.laminar.api.L.svg.*
 import com.raquo.laminar.nodes.ReactiveSvgElement
