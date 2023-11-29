@@ -10,7 +10,9 @@ case class SideChromeLayoutSettings(width: Pixels = Pixels(200),
                                     powerMeterWidth: Pixels = Pixels(170))
 
 case class TopChromeLayoutSettings(height: Pixels = Pixels(90),
-                                   padding: Pixels = Pixels(6))
+                                   padding: Pixels = Pixels(6)) {
+  def totalHeight: Pixels = height + padding
+}
 
 case class GameOverPanelLayoutSettings(width: Pixels = Pixels(400),
                                        height: Pixels = Pixels(200))
@@ -19,7 +21,15 @@ case class ScreenLayoutSettings(gameSceneWidth: Pixels = Pixels(800),
                                 gameSceneHeight: Pixels = Pixels(800),
                                 topChrome: TopChromeLayoutSettings = TopChromeLayoutSettings(),
                                 sideChrome: SideChromeLayoutSettings = SideChromeLayoutSettings(),
-                                gameOverPanel: GameOverPanelLayoutSettings = GameOverPanelLayoutSettings())
+                                gameOverPanel: GameOverPanelLayoutSettings = GameOverPanelLayoutSettings()) {
+  def gameSceneY: Pixels = topChrome.totalHeight
+
+  def sideChromeX: Pixels = gameSceneWidth + sideChrome.padding
+
+  def totalWidth: Pixels = sideChromeX + sideChrome.width
+
+  def totalHeight: Pixels = gameSceneY + gameSceneHeight
+}
 
 trait ScreenLayoutSettingsProvider {
   def getScreenLayoutSettings(viewPortInfo: ViewPortInfo): ScreenLayoutSettings
