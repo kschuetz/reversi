@@ -3,12 +3,12 @@ package reversi.ui.chrome
 import com.raquo.airstream.core.Signal
 import com.raquo.laminar.api.L.svg.*
 import com.raquo.laminar.nodes.ReactiveSvgElement
-import org.scalajs.dom.SVGSVGElement
+import org.scalajs.dom.{SVGElement, SVGSVGElement}
 import reversi.ui.layout.{Pixels, SideChromeLayoutSettings}
 
 final class SideChrome(PowerMeter: PowerMeter) {
   def apply($layout: Signal[SideChromeLayoutSettings],
-            $height: Signal[Pixels]): ReactiveSvgElement[SVGSVGElement] = {
+            $height: Signal[Pixels]): ReactiveSvgElement[SVGElement] = {
     svg(className := "side-chrome",
       Backdrop($layout.map(_.width), $height)
     )

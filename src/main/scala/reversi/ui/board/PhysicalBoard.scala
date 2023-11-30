@@ -2,7 +2,7 @@ package reversi.ui.board
 
 import com.raquo.laminar.api.L.svg.*
 import com.raquo.laminar.nodes.ReactiveSvgElement
-import org.scalajs.dom.SVGGElement
+import org.scalajs.dom.{SVGElement, SVGGElement}
 
 object PhysicalBoard {
 
@@ -23,7 +23,7 @@ final class PhysicalBoard {
 
   import PhysicalBoard.*
 
-  def apply(): ReactiveSvgElement[SVGGElement] = g()
+  def apply(): ReactiveSvgElement[SVGElement] = g()
 
   private def Square(centerX: Double, centerY: Double) =
     rect(className := Css.boardSquare,
