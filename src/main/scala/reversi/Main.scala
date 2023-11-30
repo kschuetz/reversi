@@ -4,6 +4,7 @@ import org.scalajs.dom
 import org.scalajs.dom.{Event, document}
 import reversi.core.*
 import reversi.logger.*
+import reversi.modules.{BasicsModule, CoreModule, UserInterfaceModule}
 
 import scala.scalajs.js
 import scala.scalajs.js.Promise
@@ -22,20 +23,19 @@ object Main {
       val dialogHost = dom.document.getElementById("dialog-root")
       wasmPromise
         .`then`(result => {
-          println("Loaded")
+          log.info("Engine loaded")
 
           val engineApi = result.exports.asInstanceOf[EngineApi]
           val engine = new Engine(engineApi)
-
-          println(engine.computeBeginTurnEvaluation(Color.Dark, BoardState.StandardStart))
-          println(engine.computeBeginTurnEvaluation(Color.Light, BoardState.StandardStart))
-          println(engine.computeBeginTurnEvaluation(Color.Dark, BoardState.empty.set(SquareIndex(28), Color.Dark)))
-          println(engine.computeBeginTurnEvaluation(Color.Light, BoardState.empty.set(SquareIndex(28), Color.Dark)))
-          println(engine.computeBeginTurnEvaluation(Color.Light, BoardState.empty.set(SquareIndex(28), Color.Light)))
-          println(engine.computeBeginTurnEvaluation(Color.Dark, BoardState.empty))
-          logger.log.info("Hello world!")
+          bootstrap(host, dialogHost, engine)
         })
     })
+  }
+
+  private def bootstrap(host: dom.Element, dialogHost: dom.Element, engine: Engine): Unit = {
+    val module = new BasicsModule with CoreModule(engine) with UserInterfaceModule
+    val application = module.application
+    application.start(host, dialogHost)
   }
 
 }

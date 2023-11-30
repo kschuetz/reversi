@@ -12,6 +12,7 @@ object Settings {
 
   object versions {
     val laminar = "16.0.0"
+    val macwire = "2.5.9"
     val scala = "3.3.1"
     val scalaTest = "3.2.17"
   }
