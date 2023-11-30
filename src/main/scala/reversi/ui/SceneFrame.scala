@@ -33,42 +33,6 @@ final class SceneFrame(PhysicalBoard: PhysicalBoard,
         DynamicScene()))
   }
 
-
-  /*
-  def render(props: Props): VdomElement = {
-    val Props(model, callbacks, sceneContainerContext, widthPixels, heightPixels) = props
-    val screenToBoard = makeScreenToBoard(sceneContainerContext)
-
-    val boardRotation = model.getBoardRotation
-    val rotateTransform = if (boardRotation != 0) s",rotate($boardRotation)" else ""
-
-    val dynamicSceneProps = DynamicScene.Props(model, callbacks, sceneContainerContext, screenToBoard)
-
-    val transform = if (widthPixels == heightPixels) {
-      val translate = widthPixels / 2.0
-      val scale = scaleForDimension(widthPixels)
-      s"translate($translate,$translate),scale($scale)$rotateTransform"
-    } else {
-      val translateX = widthPixels / 2.0
-      val translateY = heightPixels / 2.0
-      val scaleX = scaleForDimension(widthPixels)
-      val scaleY = scaleForDimension(heightPixels)
-      s"translate($translateX,$translateY),scale($scaleX,$scaleY)$rotateTransform"
-    }
-
-    val physicalBoardElement = physicalBoard.create()
-    val dynamicSceneElement = dynamicScene.create(dynamicSceneProps)
-    svg.<.g(
-      Backdrop((widthPixels, heightPixels)),
-      svg.<.g.withRef(playfieldRef)(
-        svg.^.transform := transform,
-        physicalBoardElement,
-        dynamicSceneElement
-      )
-    )
-  }
-   */
-
   private def Backdrop($width: Signal[Pixels],
                        $height: Signal[Pixels]) =
     rect(className := "backdrop",
