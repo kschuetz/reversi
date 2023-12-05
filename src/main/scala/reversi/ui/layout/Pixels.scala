@@ -12,6 +12,8 @@ object Pixels {
 
     def *(rhs: Int): Pixels = value * rhs
 
+    def /(rhs: Int): Pixels = value / rhs
+
     def >=(rhs: Pixels): Boolean = value >= rhs
 
     def toSvgString: String = s"${value}px"

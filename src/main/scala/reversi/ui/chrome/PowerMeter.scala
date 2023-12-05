@@ -14,4 +14,5 @@ final class PowerMeter {
     g(className := "power-meter",
       rect(width <-- $width.map(_.toString),
         height <-- $height.map(_.toString)))
+
 }

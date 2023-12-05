@@ -27,9 +27,9 @@ final class SceneFrame(PhysicalBoard: PhysicalBoard,
           s"translate($translateX,$translateY),scale($scaleX,$scaleY)$rotateTransform"
         }
     }
-    g(transform <-- $transform,
-      Backdrop($width, $height),
-      g(PhysicalBoard(),
+    g(Backdrop($width, $height),
+      g(transform <-- $transform,
+        PhysicalBoard(),
         DynamicScene()))
   }
 
