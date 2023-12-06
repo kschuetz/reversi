@@ -1,6 +1,8 @@
 package reversi.ui.layout
 
-class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
+import reversi.logger.*
+
+final class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
   private case class CacheSettings(width: Pixels,
                                    height: Pixels,
@@ -74,7 +76,7 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
     else {
       val newSettings = getSettings(width, height)
 
-      //      logger.log.info(s"Adapting screen layout for dimensions ($width × $height)")
+      log.info(s"Adapting screen layout for dimensions ($width × $height)")
 
       cache = CacheSettings(width, height, newSettings)
       newSettings
