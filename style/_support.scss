@@ -45,7 +45,7 @@ $screen-lg-min: $screen-lg;
 //** Deprecated `@screen-lg-desktop` as of v3.0.1
 $screen-lg-desktop: $screen-lg-min;
 
-.clearfix {
+%clearfix {
   &:before,
   &:after {
     content: " "; // 1
@@ -57,16 +57,16 @@ $screen-lg-desktop: $screen-lg-min;
   }
 }
 
-.container-fixed {
+%container-fixed {
   margin-right: auto;
   margin-left: auto;
-  padding-left: ($grid-gutter-width / 2);
-  padding-right: ($grid-gutter-width / 2);
-  @extend .clearfix;
+  padding-left: calc($grid-gutter-width / 2);
+  padding-right: calc($grid-gutter-width / 2);
+  @extend %clearfix;
 }
 
 .container {
-  @extend .container-fixed;
+  @extend %container-fixed;
 
   @media (min-width: $screen-sm-min) {
     width: $container-sm;
