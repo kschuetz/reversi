@@ -5,6 +5,7 @@ import org.scalajs.dom
 import org.scalajs.dom.UIEvent
 import reversi.ui.GameScreen
 import reversi.ui.layout.{BrowserEnvironment, ScreenLayoutSettings, ScreenLayoutSettingsProvider}
+import reversi.ui.models.PieceTransforms
 
 final class Application(engine: Engine,
                         GameScreen: GameScreen,
@@ -20,7 +21,10 @@ final class Application(engine: Engine,
       handleWindowResize($screenLayoutSettings)
 
     val $boardRotation = Val(0d)
-    render(gameHost, GameScreen($screenLayoutSettings.signal, $boardRotation))
+    val $boardState = Var(BoardState.StandardStart)
+    val $pieceTransforms = Var(PieceTransforms.none)
+    val screen = GameScreen($screenLayoutSettings.signal, $boardRotation, $boardState.signal, $pieceTransforms.signal)
+    render(gameHost, screen)
   }
 
   private def screenLayoutSettingsForBrowserEnvironment(): ScreenLayoutSettings = {

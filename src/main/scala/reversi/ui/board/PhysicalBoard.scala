@@ -1,6 +1,6 @@
 package reversi.ui.board
 
-import com.raquo.laminar.api.L.seqToModifier
+import com.raquo.laminar.api.L.given
 import com.raquo.laminar.api.L.svg.*
 import com.raquo.laminar.nodes.ReactiveSvgElement
 import org.scalajs.dom.{SVGElement, SVGGElement}
@@ -33,7 +33,7 @@ final class PhysicalBoard {
       centerX = col - BoardCenterOffset
     } yield Square(centerX, centerY)
     g(BoardBorder(0.3),
-      seqToModifier(squares))
+      squares)
   }
 
   private def Square(centerX: Double, centerY: Double) =
