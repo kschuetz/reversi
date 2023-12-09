@@ -66,6 +66,8 @@ object Row {
   extension (self: Row) {
     def toInt: Int = self
 
+    def toDouble: Double = self.toDouble
+
     inline def isInBounds: Boolean = toInt >= Min && toInt <= Max
 
     def +(offset: Int): Row = toInt + offset
@@ -91,6 +93,8 @@ object Column {
 
   extension (self: Column) {
     def toInt: Int = self
+
+    def toDouble: Double = self.toDouble
 
     inline def isInBounds: Boolean = toInt >= Min && toInt <= Max
 

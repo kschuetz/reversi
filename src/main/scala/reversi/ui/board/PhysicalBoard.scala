@@ -4,6 +4,8 @@ import com.raquo.laminar.api.L.given
 import com.raquo.laminar.api.L.svg.*
 import com.raquo.laminar.nodes.ReactiveSvgElement
 import org.scalajs.dom.{SVGElement, SVGGElement}
+import reversi.core.SquareIndex
+import reversi.ui.models.Point
 
 object PhysicalBoard {
 
@@ -13,6 +15,9 @@ object PhysicalBoard {
 
   val SquareCenterOffset: Double = SquareSize / 2
   private val BoardCenterOffset = 3.5 * SquareSize
+
+  def centerOfSquare(squareIndex: SquareIndex): Point =
+    Point(squareIndex.column.toDouble - BoardCenterOffset, squareIndex.row.toDouble - BoardCenterOffset) 
 
   object Css {
     val boardSquare = "board-square"

@@ -28,3 +28,21 @@
   fill: lightgray;
   stroke: none;
 }
+
+.piece {
+  stroke-width: 0.12;
+
+  &.dark {
+    fill: #4b4b50;
+    stroke: #2f2f2f;
+  }
+
+  &.light {
+    fill: #e7e7e7;
+    stroke: white;
+  }
+}
+
+.ghost-piece {
+  opacity: 0.48;
+}

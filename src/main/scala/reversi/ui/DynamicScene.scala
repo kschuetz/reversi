@@ -6,6 +6,7 @@ import com.raquo.laminar.api.L.svg.*
 import com.raquo.laminar.nodes.ReactiveSvgElement
 import org.scalajs.dom.{SVGElement, SVGGElement}
 import reversi.core.{BoardState, Color, SquareIndex}
+import reversi.ui.board.PhysicalBoard
 import reversi.ui.models.{PieceState, PieceTransforms}
 import reversi.ui.piece.PhysicalPiece
 
@@ -37,8 +38,8 @@ final class DynamicScene(PhysicalPiece: PhysicalPiece) {
                             ghost: Boolean,
                             pieceTransforms: PieceTransforms): PieceNode = {
     val flipPosition = pieceTransforms.getFlipPosition(squareIndex)
-    val pieceState = PieceState(color = color, xpos = 0, ypos = 0, flipPosition = flipPosition,
-      ghost = ghost)
+    val pieceState = PieceState(color = color, position = PhysicalBoard.centerOfSquare(squareIndex),
+      flipPosition = flipPosition, ghost = ghost)
     PieceNode(squareIndex, pieceState)
   }
 
