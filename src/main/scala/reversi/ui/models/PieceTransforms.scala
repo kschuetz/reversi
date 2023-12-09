@@ -10,4 +10,8 @@ case class PieceTransforms(flipPositions: Map[SquareIndex, Fraction],
                            ghostPieces: Map[SquareIndex, Color]) {
   def getFlipPosition(squareIndex: SquareIndex): Fraction =
     flipPositions.getOrElse(squareIndex, Fraction.Zero)
+
+  def setFlipPosition(squareIndex: SquareIndex, value: Fraction): PieceTransforms =
+    if value == Fraction.Zero then copy(flipPositions = flipPositions - squareIndex)
+    else copy(flipPositions = flipPositions + (squareIndex -> value))
 }

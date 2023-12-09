@@ -1,15 +1,17 @@
 package reversi.ui.piece
 
 import com.raquo.airstream.core.Signal
-import com.raquo.laminar.api.L.{MapValueMapper, StringValueMapper, Val}
 import com.raquo.laminar.api.L.svg.*
+import com.raquo.laminar.api.L.{MapValueMapper, StringValueMapper, Val}
 import com.raquo.laminar.nodes.ReactiveSvgElement
 import org.scalajs.dom.SVGElement
 import reversi.core.Color
-import reversi.ui.models.PieceState
+import reversi.ui.models.{Fraction, PieceState}
 
 object PhysicalPiece {
   val PieceRadius = 0.35
+
+  val Thickness = 0.05
 }
 
 final class PhysicalPiece {
@@ -20,7 +22,6 @@ final class PhysicalPiece {
     g(PieceBody($state))
 
   private def PieceBody($state: Signal[PieceState]): ReactiveSvgElement[SVGElement] = {
-    val $color = $state.map(_.color)
     val $classes = $state.map { state =>
       Map("piece" -> true,
         "dark" -> (state.color == Color.Dark),
@@ -31,7 +32,26 @@ final class PhysicalPiece {
       s"translate(${state.position.x},${state.position.y}),scale(${state.scale})"
     }
     g(cls <-- $classes, transform <-- $transform,
-      Disk($color, Val(PieceRadius)))
+      PieceTop($state, Val(PieceRadius)))
+  }
+
+  private def PieceTop($state: Signal[PieceState],
+                       $radius: Signal[Double]): ReactiveSvgElement[SVGElement] = {
+    val $topColor = $state.map { state => if state.flipPosition.value <= 0.5 then state.color else state.color.opponent }
+    val $topTransform = $state.map { state =>
+      val yScale = 2 * (0.5 - state.flipPosition.value).abs
+      s"scale(1,$yScale)"
+    }
+    val $bottomColor = $topColor.map(_.opponent)
+    val $bottomTransform = $state.map { state =>
+      val offset = Thickness //math.sin(state.flipPosition.value * Math.PI * Thickness)
+      val yScale = 2 * (0.5 - state.flipPosition.value).abs
+      s"translate(0,$offset),scale(1,$yScale)"
+    }
+    g(
+      g(transform <-- $bottomTransform, Disk($bottomColor, $radius)),
+      g(transform <-- $topTransform, Disk($topColor, $radius))
+    )
   }
 
   private def Disk($color: Signal[Color],
@@ -42,5 +62,4 @@ final class PhysicalPiece {
     }
     circle(className <-- $classes, r <-- $radius.map(_.toString))
   }
-
 }

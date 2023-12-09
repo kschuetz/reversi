@@ -5,12 +5,26 @@ import org.scalajs.dom
 import org.scalajs.dom.UIEvent
 import reversi.ui.GameScreen
 import reversi.ui.layout.{BrowserEnvironment, ScreenLayoutSettings, ScreenLayoutSettingsProvider}
-import reversi.ui.models.PieceTransforms
+import reversi.ui.models.{Fraction, PieceTransforms}
 
 final class Application(engine: Engine,
                         GameScreen: GameScreen,
                         screenLayoutSettingsProvider: ScreenLayoutSettingsProvider) {
   private var resizeTimeoutHandle: Int = 0
+
+  private val SandboxBoard1 = SquareIndex.All.foldLeft(BoardState.empty) {
+    case (acc, idx) =>
+      idx.toInt % 3 match {
+        case 0 => acc.set(idx, Color.Dark)
+        case 1 => acc.set(idx, Color.Light)
+        case _ => acc
+      }
+  }
+
+  private val SandboxPieceTransforms1 = SquareIndex.All.foldLeft(PieceTransforms.none) {
+    case (acc, idx) =>
+      acc.setFlipPosition(idx, Fraction(idx.toInt / 64.0))
+  }
 
   def start(gameHost: dom.Element, dialogHost: dom.Element): Unit = {
     val initialScreenLayoutSettings = screenLayoutSettingsForBrowserEnvironment()
@@ -21,8 +35,8 @@ final class Application(engine: Engine,
       handleWindowResize($screenLayoutSettings)
 
     val $boardRotation = Val(0d)
-    val $boardState = Var(BoardState.StandardStart)
-    val $pieceTransforms = Var(PieceTransforms.none)
+    val $boardState = Var(SandboxBoard1)
+    val $pieceTransforms = Var(SandboxPieceTransforms1)
     val screen = GameScreen($screenLayoutSettings.signal, $boardRotation, $boardState.signal, $pieceTransforms.signal)
     render(gameHost, screen)
   }
