@@ -37,7 +37,9 @@ final class Application(engine: Engine,
     val $boardRotation = Val(0d)
     val $boardState = Var(SandboxBoard1)
     val $pieceTransforms = Var(SandboxPieceTransforms1)
-    val screen = GameScreen($screenLayoutSettings.signal, $boardRotation, $boardState.signal, $pieceTransforms.signal)
+    val $turnToPlay = Var(Color.Dark)
+    val screen = GameScreen($screenLayoutSettings.signal, $boardRotation, $boardState.signal, $pieceTransforms.signal,
+      $turnToPlay.signal)
     render(gameHost, screen)
   }
 
