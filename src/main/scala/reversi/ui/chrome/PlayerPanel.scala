@@ -15,7 +15,7 @@ final class PlayerPanel(PieceAvatar: PieceAvatar) {
             $height: Signal[Pixels],
             $playerName: Signal[String],
             $clockSeconds: Signal[Int],
-            $isPlayerTurn: Signal[Boolean]): ReactiveSvgElement[SVGElement] = {
+            $isPlayerTurn: Signal[Option[Boolean]]): ReactiveSvgElement[SVGElement] = {
     g(Backdrop(side, $width, $height),
       makeAvatar(side, $height, $isPlayerTurn))
   }
@@ -31,7 +31,7 @@ final class PlayerPanel(PieceAvatar: PieceAvatar) {
 
   private def makeAvatar(color: Color,
                          $height: Signal[Pixels],
-                         $isPlayerTurn: Signal[Boolean]): ReactiveSvgElement[SVGElement] = {
+                         $isPlayerTurn: Signal[Option[Boolean]]): ReactiveSvgElement[SVGElement] = {
     val $scale = $height.map(h => h.value * 0.8)
     val $position = $scale.combineWithFn($height) {
       case (scale, height) =>

@@ -2,6 +2,8 @@ package reversi.core
 
 sealed trait BeginTurnEvaluation {
   def powerBalance: Power
+
+  def legalMoves: Set[SquareIndex]
 }
 
 object BeginTurnEvaluation {
@@ -14,9 +16,13 @@ object BeginTurnEvaluation {
       case Color.Dark => Power.DarkWin
       case Color.Light => Power.LightWin
     }
+
+    def legalMoves: Set[SquareIndex] = Set.empty
   }
 
   case object Draw extends BeginTurnEvaluation {
     def powerBalance: Power = Power.Even
+
+    def legalMoves: Set[SquareIndex] = Set.empty
   }
 }

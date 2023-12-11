@@ -18,11 +18,11 @@ final class PieceAvatar(PhysicalPiece: PhysicalPiece) {
 
   def apply(color: Color,
             $position: Signal[Point],
-            $isPlayerTurn: Signal[Boolean],
+            $isPlayerTurn: Signal[Option[Boolean]],
             $scale: Signal[Double]): ReactiveSvgElement[SVGElement] = {
     val $pieceState = $position.combineWithFn($isPlayerTurn, $scale) {
       case (position, isPlayerTurn, scale) => PieceState(color = color, position = position,
-        flipPosition = FlipPosition, scale = scale, ghost = !isPlayerTurn)
+        flipPosition = FlipPosition, scale = scale, ghost = isPlayerTurn.contains(false))
     }
     g(className := "piece-avatar", PhysicalPiece($pieceState))
   }

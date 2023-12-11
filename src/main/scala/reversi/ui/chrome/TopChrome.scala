@@ -11,7 +11,7 @@ import reversi.ui.layout.{Pixels, TopChromeLayoutSettings}
 final class TopChrome(PlayerPanel: PlayerPanel) {
   def apply($layout: Signal[TopChromeLayoutSettings],
             $width: Signal[Pixels],
-            $turnToPlay: Signal[Color]): ReactiveSvgElement[SVGElement] = {
+            $turnToPlay: Signal[Option[Color]]): ReactiveSvgElement[SVGElement] = {
     val $playerPanelWidth = $width.map(_ / 2)
     val $playerPanelHeight = $layout.map(_.height)
 
@@ -40,8 +40,8 @@ final class TopChrome(PlayerPanel: PlayerPanel) {
                               $panelHeight: Signal[Pixels],
                               $playerName: Signal[String],
                               $clockSeconds: Signal[Int],
-                              $turnToPlay: Signal[Color]) =
+                              $turnToPlay: Signal[Option[Color]]) =
     PlayerPanel(color, $panelWidth, $panelHeight, Val("Player"), Val(0),
-      $turnToPlay.map(_ == color))
+      $turnToPlay.map(_.map(_ == color)))
 
 }

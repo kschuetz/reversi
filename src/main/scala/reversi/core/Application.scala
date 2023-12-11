@@ -35,11 +35,14 @@ final class Application(engine: Engine,
       handleWindowResize($screenLayoutSettings)
 
     val $boardRotation = Val(0d)
-    val $boardState = Var(SandboxBoard1)
-    val $pieceTransforms = Var(SandboxPieceTransforms1)
-    val $turnToPlay = Var(Color.Dark)
-    val screen = GameScreen($screenLayoutSettings.signal, $boardRotation, $boardState.signal, $pieceTransforms.signal,
-      $turnToPlay.signal)
+    val $boardState = Var(BoardState.StandardStart)
+    val $pieceTransforms = Var(PieceTransforms.none)
+    val $turnToPlay = Var(Option(Color.Dark))
+
+    val boardState = BoardState.StandardStart
+    val $gameState = Var(GameState(board = boardState,
+      beginTurnEvaluation = engine.computeBeginTurnEvaluation(Color.Dark, boardState)))
+    val screen = GameScreen($screenLayoutSettings.signal, $boardRotation, $gameState.signal, $pieceTransforms.signal)
     render(gameHost, screen)
   }
 
