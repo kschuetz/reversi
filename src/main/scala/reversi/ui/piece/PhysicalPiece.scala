@@ -11,7 +11,7 @@ import reversi.ui.models.{Fraction, PieceState}
 object PhysicalPiece {
   val PieceRadius = 0.35
 
-  val Thickness = 0.05
+  val Thickness = 0.07
 }
 
 final class PhysicalPiece {
@@ -39,13 +39,13 @@ final class PhysicalPiece {
                        $radius: Signal[Double]): ReactiveSvgElement[SVGElement] = {
     val $topColor = $state.map { state => if state.flipPosition.value <= 0.5 then state.color else state.color.opponent }
     val $topTransform = $state.map { state =>
-      val yScale = 2 * (0.5 - state.flipPosition.value).abs
+      val yScale = yScaleForFlipPosition(state.flipPosition)
       s"scale(1,$yScale)"
     }
     val $bottomColor = $topColor.map(_.opponent)
     val $bottomTransform = $state.map { state =>
-      val offset = Thickness //math.sin(state.flipPosition.value * Math.PI * Thickness)
-      val yScale = 2 * (0.5 - state.flipPosition.value).abs
+      val offset = Thickness * math.sin(state.flipPosition.value * 2 * math.Pi)
+      val yScale = yScaleForFlipPosition(state.flipPosition)
       s"translate(0,$offset),scale(1,$yScale)"
     }
     g(
@@ -61,5 +61,9 @@ final class PhysicalPiece {
       case Color.Light => "disk light"
     }
     circle(className <-- $classes, r <-- $radius.map(_.toString))
+  }
+
+  private def yScaleForFlipPosition(flipPosition: Fraction): Double = {
+    math.cos(flipPosition.value * math.Pi).abs
   }
 }
