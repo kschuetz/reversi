@@ -15,8 +15,18 @@ final class DynamicScene(PhysicalPiece: PhysicalPiece,
                          BoardOverlayButtons: BoardOverlayButtons) {
 
   def apply($gameState: Signal[GameState],
-            $pieceTransforms: Signal[PieceTransforms],
+            $basePieceTransforms: Signal[PieceTransforms],
+            $mouseInSquare: Signal[Option[SquareIndex]],
             squareInteractions: WriteBus[SquareInteraction]): ReactiveSvgElement[SVGElement] = {
+    val $pieceTransforms = $basePieceTransforms.combineWithFn($gameState, $mouseInSquare) {
+      case (base, gameState, mouseInSquare) =>
+        val maybeGhost = for {
+          color <- gameState.turnToPlay
+          squareIndex <- mouseInSquare if gameState.legalMoves.contains(squareIndex)
+        } yield (color, squareIndex)
+
+        maybeGhost.fold(base) { case (color, squareIndex) => base.setGhost(squareIndex, color) }
+    }
     val $piecesMap = $gameState.combineWithFn($pieceTransforms)(buildPiecesList)
     val $pieces = $piecesMap.split(_.squareIndex)(renderPiece)
     val $welcomeToClick = $gameState.map(_.legalMoves)
@@ -32,7 +42,7 @@ final class DynamicScene(PhysicalPiece: PhysicalPiece,
           case Some(color) => acc :+ makePieceNode(idx, color, false, pieceTransforms)
           case None =>
             pieceTransforms.ghostPieces.get(idx) match {
-              case Some(color) => acc :+ makePieceNode(idx, color, false, pieceTransforms)
+              case Some(color) => acc :+ makePieceNode(idx, color, true, pieceTransforms)
               case None => acc
             }
         }

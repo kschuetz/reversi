@@ -5,7 +5,7 @@ import com.raquo.airstream.eventbus.WriteBus
 import com.raquo.laminar.api.L.svg.*
 import com.raquo.laminar.nodes.ReactiveSvgElement
 import org.scalajs.dom.SVGElement
-import reversi.core.GameState
+import reversi.core.{GameState, SquareIndex}
 import reversi.ui.layout.Pixels
 import reversi.ui.models.{PieceTransforms, SquareInteraction}
 
@@ -15,9 +15,10 @@ final class SceneContainer(SceneFrame: SceneFrame) {
             $boardRotation: Signal[Double],
             $gameState: Signal[GameState],
             $pieceTransforms: Signal[PieceTransforms],
+            $mouseInSquare: Signal[Option[SquareIndex]],
             squareInteractions: WriteBus[SquareInteraction]): ReactiveSvgElement[SVGElement] =
     svg(idAttr := "game-scene",
       width <-- $width.map(_.toSvgString),
       height <-- $height.map(_.toSvgString),
-      SceneFrame($width, $height, $boardRotation, $gameState, $pieceTransforms, squareInteractions))
+      SceneFrame($width, $height, $boardRotation, $gameState, $pieceTransforms, $mouseInSquare, squareInteractions))
 }

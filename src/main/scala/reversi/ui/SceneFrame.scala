@@ -5,7 +5,7 @@ import com.raquo.airstream.eventbus.WriteBus
 import com.raquo.laminar.api.L.svg.*
 import com.raquo.laminar.nodes.ReactiveSvgElement
 import org.scalajs.dom.{SVGElement, SVGGElement}
-import reversi.core.GameState
+import reversi.core.{GameState, SquareIndex}
 import reversi.ui.board.PhysicalBoard
 import reversi.ui.layout.Pixels
 import reversi.ui.models.{PieceTransforms, SquareInteraction}
@@ -17,6 +17,7 @@ final class SceneFrame(PhysicalBoard: PhysicalBoard,
             $boardRotation: Signal[Double],
             $gameState: Signal[GameState],
             $pieceTransforms: Signal[PieceTransforms],
+            $mouseInSquare: Signal[Option[SquareIndex]],
             squareInteractions: WriteBus[SquareInteraction]): ReactiveSvgElement[SVGElement] = {
     val $transform = $width.combineWithFn($height, $boardRotation) {
       (width, height, boardRotation) =>
@@ -36,7 +37,7 @@ final class SceneFrame(PhysicalBoard: PhysicalBoard,
     g(Backdrop($width, $height),
       g(transform <-- $transform,
         PhysicalBoard(),
-        DynamicScene($gameState, $pieceTransforms, squareInteractions)))
+        DynamicScene($gameState, $pieceTransforms, $mouseInSquare, squareInteractions)))
   }
 
   private def Backdrop($width: Signal[Pixels],

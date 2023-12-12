@@ -38,15 +38,25 @@ final class Application(engine: Engine,
     val $boardState = Var(BoardState.StandardStart)
     val $pieceTransforms = Var(PieceTransforms.none)
     val $turnToPlay = Var(Option(Color.Dark))
+    val $mouseInSquare = Var(Option.empty[SquareIndex])
     val squareInteractions = EventBus[SquareInteraction]()
-    val squareInteractionObserver = Observer[SquareInteraction](onNext = x => dom.console.log(x))
+    val squareInteractionObserver = Observer[SquareInteraction] {
+      case SquareInteraction.MouseOver(square) => $mouseInSquare.update(_ => Some(square))
+      case SquareInteraction.MouseOut(square) => $mouseInSquare.update { current =>
+        if current.contains(square) then None else current
+      }
+    }
+    val mouseInSquareObserver = Observer[Option[SquareIndex]] { value =>
+      println(s"mouseInSquare = $value")
+    }
 
     val boardState = BoardState.StandardStart
     val $gameState = Var(GameState(board = boardState,
       beginTurnEvaluation = engine.computeBeginTurnEvaluation(Color.Dark, boardState)))
     val screen = GameScreen($screenLayoutSettings.signal, $boardRotation, $gameState.signal, $pieceTransforms.signal,
-      squareInteractions.writer).amend(
-      squareInteractions --> squareInteractionObserver)
+      $mouseInSquare.signal, squareInteractions.writer).amend(
+      squareInteractions --> squareInteractionObserver,
+      $mouseInSquare.signal --> mouseInSquareObserver)
     render(gameHost, screen)
   }
 
