@@ -6,4 +6,6 @@ case class GameState(board: BoardState,
     case ip: BeginTurnEvaluation.InProgress => Some(ip.turnToPlay)
     case _ => None
   }
+
+  def legalMoves: Set[SquareIndex] = beginTurnEvaluation.legalMoves
 }

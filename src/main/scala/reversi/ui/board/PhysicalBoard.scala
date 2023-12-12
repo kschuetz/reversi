@@ -11,10 +11,10 @@ object PhysicalBoard {
 
   inline def SquareSize: Double = 1.0
 
-  private inline def SquareSizeStr = SquareSize.toString
+  inline def SquareSizeStr: String = SquareSize.toString
 
   val SquareCenterOffset: Double = SquareSize / 2
-  private val BoardCenterOffset = 3.5 * SquareSize
+  val BoardCenterOffset: Double = 3.5 * SquareSize
 
   def centerOfSquare(squareIndex: SquareIndex): Point =
     Point(squareIndex.column.toDouble - BoardCenterOffset, squareIndex.row.toDouble - BoardCenterOffset) 

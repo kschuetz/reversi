@@ -1,12 +1,14 @@
 package reversi.modules
 
 import com.softwaremill.macwire.wire
-import reversi.ui.board.PhysicalBoard
+import reversi.ui.board.{BoardOverlayButtons, PhysicalBoard}
 import reversi.ui.chrome.*
 import reversi.ui.piece.PhysicalPiece
 import reversi.ui.{DynamicScene, GameScreen, SceneContainer, SceneFrame}
 
 trait UserInterfaceModule {
+  lazy val BoardOverlayButtons: BoardOverlayButtons = wire[BoardOverlayButtons]
+
   lazy val DynamicScene: DynamicScene = wire[DynamicScene]
 
   lazy val GameScreen: GameScreen = wire[GameScreen]

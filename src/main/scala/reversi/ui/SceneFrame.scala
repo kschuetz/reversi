@@ -1,13 +1,14 @@
 package reversi.ui
 
 import com.raquo.airstream.core.Signal
+import com.raquo.airstream.eventbus.WriteBus
 import com.raquo.laminar.api.L.svg.*
 import com.raquo.laminar.nodes.ReactiveSvgElement
 import org.scalajs.dom.{SVGElement, SVGGElement}
-import reversi.core.{BoardState, GameState}
+import reversi.core.GameState
 import reversi.ui.board.PhysicalBoard
 import reversi.ui.layout.Pixels
-import reversi.ui.models.PieceTransforms
+import reversi.ui.models.{PieceTransforms, SquareInteraction}
 
 final class SceneFrame(PhysicalBoard: PhysicalBoard,
                        DynamicScene: DynamicScene) {
@@ -15,7 +16,8 @@ final class SceneFrame(PhysicalBoard: PhysicalBoard,
             $height: Signal[Pixels],
             $boardRotation: Signal[Double],
             $gameState: Signal[GameState],
-            $pieceTransforms: Signal[PieceTransforms]): ReactiveSvgElement[SVGElement] = {
+            $pieceTransforms: Signal[PieceTransforms],
+            squareInteractions: WriteBus[SquareInteraction]): ReactiveSvgElement[SVGElement] = {
     val $transform = $width.combineWithFn($height, $boardRotation) {
       (width, height, boardRotation) =>
         val rotateTransform = if (boardRotation != 0) s",rotate($boardRotation)" else ""
@@ -34,7 +36,7 @@ final class SceneFrame(PhysicalBoard: PhysicalBoard,
     g(Backdrop($width, $height),
       g(transform <-- $transform,
         PhysicalBoard(),
-        DynamicScene($gameState, $pieceTransforms)))
+        DynamicScene($gameState, $pieceTransforms, squareInteractions)))
   }
 
   private def Backdrop($width: Signal[Pixels],

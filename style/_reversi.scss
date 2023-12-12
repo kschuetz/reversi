@@ -46,3 +46,15 @@
 .ghost-piece {
   opacity: 0.48;
 }
+
+.square-overlay {
+  stroke-width: 0;
+  stroke: transparent;
+  fill: transparent;
+}
+
+.square-overlay.welcome:hover {
+  cursor: pointer;
+  fill: white;
+  opacity: 0.1;
+}

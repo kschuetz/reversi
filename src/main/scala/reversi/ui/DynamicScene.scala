@@ -1,22 +1,26 @@
 package reversi.ui
 
 import com.raquo.airstream.core.Signal
+import com.raquo.airstream.eventbus.WriteBus
 import com.raquo.laminar.api.L.children
 import com.raquo.laminar.api.L.svg.*
 import com.raquo.laminar.nodes.ReactiveSvgElement
 import org.scalajs.dom.{SVGElement, SVGGElement}
 import reversi.core.{Color, GameState, SquareIndex}
-import reversi.ui.board.PhysicalBoard
-import reversi.ui.models.{PieceState, PieceTransforms}
+import reversi.ui.board.{BoardOverlayButtons, PhysicalBoard}
+import reversi.ui.models.{PieceState, PieceTransforms, SquareInteraction}
 import reversi.ui.piece.PhysicalPiece
 
-final class DynamicScene(PhysicalPiece: PhysicalPiece) {
+final class DynamicScene(PhysicalPiece: PhysicalPiece,
+                         BoardOverlayButtons: BoardOverlayButtons) {
 
   def apply($gameState: Signal[GameState],
-            $pieceTransforms: Signal[PieceTransforms]): ReactiveSvgElement[SVGElement] = {
+            $pieceTransforms: Signal[PieceTransforms],
+            squareInteractions: WriteBus[SquareInteraction]): ReactiveSvgElement[SVGElement] = {
     val $piecesMap = $gameState.combineWithFn($pieceTransforms)(buildPiecesList)
     val $pieces = $piecesMap.split(_.squareIndex)(renderPiece)
-    g(children <-- $pieces)
+    val $welcomeToClick = $gameState.map(_.legalMoves)
+    g(children <-- $pieces, BoardOverlayButtons(squareInteractions, $welcomeToClick))
   }
 
   private def buildPiecesList(gameState: GameState,

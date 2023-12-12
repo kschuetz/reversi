@@ -1,11 +1,11 @@
 package reversi.core
 
-import com.raquo.laminar.api.L.{*, given}
+import com.raquo.laminar.api.L.{svg, *, given}
 import org.scalajs.dom
 import org.scalajs.dom.UIEvent
 import reversi.ui.GameScreen
 import reversi.ui.layout.{BrowserEnvironment, ScreenLayoutSettings, ScreenLayoutSettingsProvider}
-import reversi.ui.models.{Fraction, PieceTransforms}
+import reversi.ui.models.{Fraction, PieceTransforms, SquareInteraction}
 
 final class Application(engine: Engine,
                         GameScreen: GameScreen,
@@ -38,11 +38,15 @@ final class Application(engine: Engine,
     val $boardState = Var(BoardState.StandardStart)
     val $pieceTransforms = Var(PieceTransforms.none)
     val $turnToPlay = Var(Option(Color.Dark))
+    val squareInteractions = EventBus[SquareInteraction]()
+    val squareInteractionObserver = Observer[SquareInteraction](onNext = x => dom.console.log(x))
 
     val boardState = BoardState.StandardStart
     val $gameState = Var(GameState(board = boardState,
       beginTurnEvaluation = engine.computeBeginTurnEvaluation(Color.Dark, boardState)))
-    val screen = GameScreen($screenLayoutSettings.signal, $boardRotation, $gameState.signal, $pieceTransforms.signal)
+    val screen = GameScreen($screenLayoutSettings.signal, $boardRotation, $gameState.signal, $pieceTransforms.signal,
+      squareInteractions.writer).amend(
+      squareInteractions --> squareInteractionObserver)
     render(gameHost, screen)
   }
 
