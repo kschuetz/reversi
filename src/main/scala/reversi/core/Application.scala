@@ -34,29 +34,12 @@ final class Application(engine: Engine,
     dom.window.onresize = _ =>
       handleWindowResize($screenLayoutSettings)
 
-    val $boardRotation = Val(0d)
-    val $boardState = Var(BoardState.StandardStart)
-    val $pieceTransforms = Var(PieceTransforms.none)
-    val $turnToPlay = Var(Option(Color.Dark))
-    val $mouseInSquare = Var(Option.empty[SquareIndex])
-    val squareInteractions = EventBus[SquareInteraction]()
-    val squareInteractionObserver = Observer[SquareInteraction] {
-      case SquareInteraction.MouseOver(square) => $mouseInSquare.update(_ => Some(square))
-      case SquareInteraction.MouseOut(square) => $mouseInSquare.update { current =>
-        if current.contains(square) then None else current
-      }
-    }
-    val mouseInSquareObserver = Observer[Option[SquareIndex]] { value =>
-      println(s"mouseInSquare = $value")
-    }
+    val model = createInitialModel
 
-    val boardState = BoardState.StandardStart
-    val $gameState = Var(GameState(board = boardState,
-      beginTurnEvaluation = engine.computeBeginTurnEvaluation(Color.Dark, boardState)))
-    val screen = GameScreen($screenLayoutSettings.signal, $boardRotation, $gameState.signal, $pieceTransforms.signal,
-      $mouseInSquare.signal, squareInteractions.writer).amend(
-      squareInteractions --> squareInteractionObserver,
-      $mouseInSquare.signal --> mouseInSquareObserver)
+    val screen = GameScreen($screenLayoutSettings.signal, model.$boardRotation.signal,
+      model.$gameState.signal, model.$pieceTransforms.signal,
+      model.$mouseInSquare.signal, model.squareInteractions.writer).amend(
+      model.squareInteractions --> squareInteractionsObserver(model.$mouseInSquare))
     render(gameHost, screen)
   }
 
@@ -77,4 +60,33 @@ final class Application(engine: Engine,
     if (resizeTimeoutHandle != 0) dom.window.clearTimeout(resizeTimeoutHandle)
     resizeTimeoutHandle = dom.window.setTimeout(() => update(), 100)
   }
+
+  private def initialBoardState: BoardState = BoardState.StandardStart
+
+  private def createInitialModel: ApplicationModel = {
+    val boardState = initialBoardState
+    val $gameState = Var(GameState(board = boardState,
+      beginTurnEvaluation = engine.computeBeginTurnEvaluation(Color.Dark, boardState)))
+    val $pieceTransforms = Var(PieceTransforms.none)
+    val $mouseInSquare = Var(Option.empty[SquareIndex])
+    val squareInteractions = EventBus[SquareInteraction]()
+    val squareInteractionObserver = Observer[SquareInteraction] {
+      case SquareInteraction.MouseOver(square) => $mouseInSquare.update(_ => Some(square))
+      case SquareInteraction.MouseOut(square) => $mouseInSquare.update { current =>
+        if current.contains(square) then None else current
+      }
+    }
+    val $boardRotation = Var(0d)
+    new ApplicationModel($gameState = $gameState, $pieceTransforms = $pieceTransforms,
+      squareInteractions = squareInteractions, $mouseInSquare = $mouseInSquare, $boardRotation = $boardRotation)
+  }
+
+  private def squareInteractionsObserver($mouseInSquare: Var[Option[SquareIndex]]) =
+    Observer[SquareInteraction] {
+      case SquareInteraction.MouseOver(square) => $mouseInSquare.update(_ => Some(square))
+      case SquareInteraction.MouseOut(square) => $mouseInSquare.update { current =>
+        if current.contains(square) then None else current
+      }
+    }
+
 }
