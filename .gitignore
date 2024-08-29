@@ -57,3 +57,4 @@ reversi.wasm
 
 ### Zig ###
 zig-cache/
+.zig-cache/
