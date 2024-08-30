@@ -4,33 +4,20 @@ const std = @import("std");
 // declaratively construct a build graph that will be executed by an external
 // runner.
 pub fn build(b: *std.Build) void {
-    const lib = b.addSharedLibrary(.{
+    const exe = b.addExecutable(.{
         .name = "reversi",
-
-        // In this case the main source file is merely a path, however, in more
-        // complicated build scripts, this could be a generated file.
-        .root_source_file = .{ .path = "src/main.zig" },
-
-        .target = .{
-            .cpu_arch = .wasm32,
-            .os_tag = .freestanding,
-            .abi = .musl,
-        },
-
-        .optimize = .ReleaseSafe,
+        .root_source_file = b.path("src/main.zig"),
+        .target = b.resolveTargetQuery(std.Target.Query.parse(
+            .{ .arch_os_abi = "wasm32-freestanding" },
+        ) catch unreachable),
+        .optimize = .ReleaseSafe, //optimize,
     });
+    exe.entry = .disabled;
+    exe.rdynamic = true;
+    b.installArtifact(exe);
 
-    lib.rdynamic = true;
-
-    // This declares intent for the library to be installed into the standard
-    // location when the user invokes the "install" step (the default step when
-    // running `zig build`).
-    b.installArtifact(lib);
-
-    // Creates a step for unit testing. This only builds the test executable
-    // but does not run it.
     const main_tests = b.addTest(.{
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = b.path("src/main.zig"),
         .target = b.standardTargetOptions(.{}),
         .optimize = .ReleaseSafe,
     });
