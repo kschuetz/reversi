@@ -7,7 +7,8 @@ object Settings {
     "-encoding",
     "utf-8",
     "-deprecation",
-    "-feature"
+    "-feature",
+    "-no-indent",
   )
 
   object versions {
