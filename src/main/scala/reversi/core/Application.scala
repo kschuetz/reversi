@@ -70,12 +70,6 @@ final class Application(engine: Engine,
     val $pieceTransforms = Var(PieceTransforms.none)
     val $mouseInSquare = Var(Option.empty[SquareIndex])
     val squareInteractions = EventBus[SquareInteraction]()
-    val squareInteractionObserver = Observer[SquareInteraction] {
-      case SquareInteraction.MouseOver(square) => $mouseInSquare.update(_ => Some(square))
-      case SquareInteraction.MouseOut(square) => $mouseInSquare.update { current =>
-        if current.contains(square) then None else current
-      }
-    }
     val $boardRotation = Var(0d)
     new ApplicationModel($gameState = $gameState, $pieceTransforms = $pieceTransforms,
       squareInteractions = squareInteractions, $mouseInSquare = $mouseInSquare, $boardRotation = $boardRotation)
