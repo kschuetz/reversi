@@ -3,7 +3,7 @@ package reversi.ui.board
 import com.raquo.airstream.core.Signal
 import com.raquo.airstream.eventbus.WriteBus
 import com.raquo.laminar.api.L.svg.*
-import com.raquo.laminar.api.L.{onMouseOut, onMouseOver, given}
+import com.raquo.laminar.api.L.{onClick, onMouseOut, onMouseOver, given}
 import com.raquo.laminar.nodes.ReactiveSvgElement
 import org.scalajs.dom.SVGElement
 import reversi.core.SquareIndex
@@ -42,6 +42,7 @@ final class BoardOverlayButtons {
       height := PhysicalBoard.SquareSizeStr,
       onMouseOver.mapToStrict(SquareInteraction.MouseOver(squareIndex)) --> squareInteractions,
       onMouseOut.mapToStrict(SquareInteraction.MouseOut(squareIndex)) --> squareInteractions,
+      onClick.mapToStrict(SquareInteraction.Click(squareIndex)) --> squareInteractions,
     )
   }
 }

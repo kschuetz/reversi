@@ -8,4 +8,6 @@ object SquareInteraction {
   case class MouseOver(square: SquareIndex) extends SquareInteraction
 
   case class MouseOut(square: SquareIndex) extends SquareInteraction
+
+  case class Click(square: SquareIndex) extends SquareInteraction
 }

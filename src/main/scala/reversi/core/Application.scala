@@ -36,10 +36,12 @@ final class Application(engine: Engine,
 
     val model = createInitialModel
 
+    val driver = new GameDriver(engine)
+
     val screen = GameScreen($screenLayoutSettings.signal, model.$boardRotation.signal,
       model.$gameState.signal, model.$pieceTransforms.signal,
       model.$mouseInSquare.signal, model.squareInteractions.writer).amend(
-      model.squareInteractions --> squareInteractionsObserver(model.$mouseInSquare))
+      model.squareInteractions --> driver.squareInteractionsObserver(model.$gameState, model.$mouseInSquare))
     render(gameHost, screen)
   }
 
@@ -66,7 +68,8 @@ final class Application(engine: Engine,
   private def createInitialModel: ApplicationModel = {
     val boardState = initialBoardState
     val $gameState = Var(GameState(board = boardState,
-      beginTurnEvaluation = engine.computeBeginTurnEvaluation(Color.Dark, boardState)))
+      beginTurnEvaluation = engine.computeBeginTurnEvaluation(Color.Dark, boardState),
+      readyForInput = true))
     val $pieceTransforms = Var(PieceTransforms.none)
     val $mouseInSquare = Var(Option.empty[SquareIndex])
     val squareInteractions = EventBus[SquareInteraction]()
@@ -74,13 +77,5 @@ final class Application(engine: Engine,
     new ApplicationModel($gameState = $gameState, $pieceTransforms = $pieceTransforms,
       squareInteractions = squareInteractions, $mouseInSquare = $mouseInSquare, $boardRotation = $boardRotation)
   }
-
-  private def squareInteractionsObserver($mouseInSquare: Var[Option[SquareIndex]]) =
-    Observer[SquareInteraction] {
-      case SquareInteraction.MouseOver(square) => $mouseInSquare.update(_ => Some(square))
-      case SquareInteraction.MouseOut(square) => $mouseInSquare.update { current =>
-        if current.contains(square) then None else current
-      }
-    }
 
 }

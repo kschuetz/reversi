@@ -1,7 +1,8 @@
 package reversi.core
 
 case class GameState(board: BoardState,
-                     beginTurnEvaluation: BeginTurnEvaluation) {
+                     beginTurnEvaluation: BeginTurnEvaluation,
+                     readyForInput: Boolean) {
   def turnToPlay: Option[Color] = beginTurnEvaluation match {
     case ip: BeginTurnEvaluation.InProgress => Some(ip.turnToPlay)
     case _ => None
