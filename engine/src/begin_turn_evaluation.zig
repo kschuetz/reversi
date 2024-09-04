@@ -13,12 +13,10 @@ pub const BeginTurnEvaluation = struct {
 
     pub fn compute(board: *const Board, current_player: Color) BeginTurnEvaluation {
         var result: BeginTurnEvaluation = .{};
-        const board_view1 = board.playerView(current_player);
-        const legal_moves1 = move_generator.generateMoves(&board_view1);
+        const legal_moves1 = move_generator.generateMoves(current_player, board);
         if (legal_moves1.isEmpty()) {
             const player = current_player.opponent();
-            const board_view2 = board.playerView(player);
-            const legal_moves2 = move_generator.generateMoves(&board_view2);
+            const legal_moves2 = move_generator.generateMoves(player, board);
             if (legal_moves2.isEmpty()) {
                 // game over
                 const dark_score = board.dark.count();
