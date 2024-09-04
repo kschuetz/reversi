@@ -109,7 +109,7 @@ pub const BoardMask = struct {
     }
 
     pub inline fn containsAll(self: @This(), other: BoardMask) bool {
-        return self.value & other.value != 0;
+        return self.value & other.value == other.value;
     }
 
     pub inline fn shift(self: @This(), dir: Direction) BoardMask {
