@@ -3,15 +3,20 @@ const Color = common.Color;
 const SquareIndex = common.SquareIndex;
 const BoardMask = common.BoardMask;
 const Direction = common.Direction;
-const Board = @import("board.zig").Board;
+const boardModule = @import("board.zig");
+const Board = boardModule.Board;
+const BoardPlayerView = boardModule.BoardPlayerView;
 const tables = @import("tables.zig");
 
-pub fn generateMoves(player: Color, board: *const Board) BoardMask {
+pub fn generateMovesForPlayer(player: Color, board: *const Board) BoardMask {
+    const board_view = board.playerView(player);
+    return generateMoves(&board_view);
+}
+
+pub fn generateMoves(board: *const BoardPlayerView) BoardMask {
     var result: BoardMask = BoardMask.empty;
-    const my_pieces = board.pieces(player);
-    const opponent_pieces = board.pieces(player.opponent());
     const unoccupied = board.unoccupiedSquares();
-    for (0..64) |i| {
+    for (0..63) |i| {
         const si = SquareIndex.of(@truncate(i));
         if (unoccupied.isSet(si)) {
             const neighbors = tables.neighbor_masks[si.value];
@@ -19,7 +24,7 @@ pub fn generateMoves(player: Color, board: *const Board) BoardMask {
                 const dir: Direction = @enumFromInt(d);
                 if (dir.isInMask(neighbors)) {
                     const shift_dir = dir.opposite();
-                    if (walk(si, my_pieces, opponent_pieces, shift_dir)) {
+                    if (walk(si, board, shift_dir)) {
                         result = result.combine(si.select());
                         break;
                     }
@@ -31,11 +36,11 @@ pub fn generateMoves(player: Color, board: *const Board) BoardMask {
     return result;
 }
 
-fn walk(square_index: SquareIndex, player: BoardMask, opponent: BoardMask, shift_dir: Direction) bool {
-    var op = opponent.shift(shift_dir);
+fn walk(square_index: SquareIndex, board: *const BoardPlayerView, shift_dir: Direction) bool {
+    var op = board.opponent.shift(shift_dir);
     if (op.isSet(square_index)) {
         op = op.shift(shift_dir);
-        var p = player.shift(shift_dir).shift(shift_dir);
+        var p = board.player.shift(shift_dir).shift(shift_dir);
         var result = p.isSet(square_index);
         while (!result) {
             if (!op.isSet(square_index)) {
@@ -54,7 +59,7 @@ const std = @import("std");
 const testing = std.testing;
 
 fn checkGeneratedMoves(board: *const Board, player: Color, expected: []const u32) !void {
-    try testing.expect(generateMoves(player, board).equals(BoardMask.squares(expected)));
+    try testing.expect(generateMovesForPlayer(player, board).equals(BoardMask.squares(expected)));
 }
 
 test "starting position, dark to move" {
