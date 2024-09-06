@@ -1,15 +1,15 @@
-pub const Color = enum(u1) {
-    Dark = 0,
-    Light,
+pub const Side = enum(u1) {
+    Player = 0,
+    Opponent,
 
-    pub fn fromInt(input: u32) Color {
-        return if (input & 1 == 0) .Dark else .Light;
+    pub fn fromInt(input: u32) Side {
+        return if (input & 1 == 0) .Player else .Opponent;
     }
 
-    pub inline fn opponent(self: @This()) Color {
+    pub inline fn opposite(self: @This()) Side {
         return switch (self) {
-            .Light => .Dark,
-            .Dark => .Light,
+            .Player => .Opponent,
+            .Opponent => .Player,
         };
     }
 };
@@ -182,15 +182,22 @@ pub const SquareIndex = struct {
 
 pub const SquareState = enum(u2) {
     Empty = 0,
-    Dark = 1,
-    Light = 2,
+    Player = 1,
+    Opponent = 2,
 
     pub fn fromInt(input: u32) SquareState {
         return switch (input & 3) {
             0 => .Empty,
-            1 => .Dark,
-            2 => .Light,
-            else => .Dark,
+            1 => .Player,
+            2 => .Opponent,
+            else => .Empty,
+        };
+    }
+
+    pub inline fn occupiedBySide(side: Side) SquareState {
+        return switch (side) {
+            Side.Player => .Player,
+            Side.Opponent => .Opponent,
         };
     }
 };

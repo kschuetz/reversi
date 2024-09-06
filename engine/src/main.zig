@@ -4,6 +4,8 @@ const Board = @import("board.zig").Board;
 const SquareIndex = common.SquareIndex;
 const BoardMask = common.BoardMask;
 const BeginTurnEvaluation = @import("begin_turn_evaluation.zig").BeginTurnEvaluation;
+const gameStateModule = @import("game_state.zig");
+const RelativeBoard = @import("board.zig").RelativeBoard;
 
 // For interaction with frontend
 const Registers = struct {
@@ -43,12 +45,8 @@ export fn setSeed(lo: u32, hi: u32) void {
     registers.seed = random.makeSeed(lo, hi);
 }
 
-export fn setCurrentPlayer(color: u32) void {
-    registers.begin_turn_evaluation.player = common.Color.fromInt(color);
-}
-
 export fn getCurrentPlayer() u32 {
-    return @intFromEnum(registers.begin_turn_evaluation.player);
+    return @intFromEnum(registers.begin_turn_evaluation.side);
 }
 
 export fn computePlayerMove(max_cycles: i32) i32 {
@@ -66,13 +64,13 @@ export fn getPlayerMove() i32 {
 }
 
 export fn computeBeginTurnEvaluation() u32 {
-    const result = BeginTurnEvaluation.compute(&registers.board, registers.begin_turn_evaluation.player);
+    const result = BeginTurnEvaluation.compute(&registers.board);
     registers.begin_turn_evaluation = result;
     return @intFromEnum(registers.begin_turn_evaluation.status);
 }
 
 export fn getWinner() u32 {
-    return @intFromEnum(registers.begin_turn_evaluation.player);
+    return @intFromEnum(registers.begin_turn_evaluation.side);
 }
 
 export fn isLegalMove(square_index: u32) bool {

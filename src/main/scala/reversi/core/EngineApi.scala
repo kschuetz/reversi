@@ -7,12 +7,12 @@ trait EngineApi extends js.Object {
   def reset(): Unit = js.native
 
   /**
-   * @return 0: empty; 1: dark; 2: light
+   * @return 0: empty; 1: player; 2: opponent
    */
   def getSquareState(idx: Int): Int = js.native
 
   /**
-   * @param value 0: empty; 1: dark; 2: light
+   * @param value 0: empty; 1: player; 2: opponent
    */
   def setSquareState(idx: Int, value: Int): Unit = js.native
 
@@ -23,12 +23,9 @@ trait EngineApi extends js.Object {
   def getSeedLo(): Int = js.native
 
   /**
-   * @param color 0: dark, 1: light
-   */
-  def setCurrentPlayer(color: Int): Unit = js.native
-
-  /**
-   * @return color 0: dark, 1: light
+   * // TODO: rename
+   *
+   * @return color 0: player, 1: opponent
    */
   def getCurrentPlayer(): Int = js.native
 
@@ -50,7 +47,7 @@ trait EngineApi extends js.Object {
   /**
    * Query the winner in the case of a win. Only meaningful if computeBeginTurnEvaluation() returned 1 (win).
    *
-   * @return 0: dark; 1: light
+   * @return 0: player; 1: opponent
    */
   def getWinner(): Int = js.native
 
@@ -62,7 +59,7 @@ trait EngineApi extends js.Object {
   /**
    * Query the power balance after calling computeBeginTurnEvaluation().
    *
-   * @return -1 (dark advantage) .. 1 (light advantage)
+   * @return -1 (player advantage) .. 1 (opponent advantage)
    */
   def getPowerBalance(): Double = js.native
 
