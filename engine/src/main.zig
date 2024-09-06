@@ -5,7 +5,7 @@ const SquareIndex = common.SquareIndex;
 const BoardMask = common.BoardMask;
 const BeginTurnEvaluation = @import("begin_turn_evaluation.zig").BeginTurnEvaluation;
 const gameStateModule = @import("game_state.zig");
-const RelativeBoard = @import("board.zig").RelativeBoard;
+const positions = @import("positions.zig");
 
 // For interaction with frontend
 const Registers = struct {
@@ -88,6 +88,6 @@ export fn generateRandomInt(bound: u32) u32 {
     return out.value;
 }
 
-export fn initializeBoard() void {
-    registers.board = Board.standardStartDark;
+export fn initializeBoard(position_id: u32) void {
+    registers.board = positions.getPosition(positions.PositionId.fromInt(position_id));
 }

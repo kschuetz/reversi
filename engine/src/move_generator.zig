@@ -5,6 +5,7 @@ const BoardMask = common.BoardMask;
 const Direction = common.Direction;
 const Board = @import("board.zig").Board;
 const tables = @import("tables.zig");
+const positions = @import("positions.zig");
 
 pub fn generateMoves(board: *const Board) BoardMask {
     var result: BoardMask = BoardMask.empty;
@@ -56,11 +57,11 @@ fn checkGeneratedMoves(board: *const Board, expected: []const u32) !void {
 }
 
 test "starting position, dark to move" {
-    try checkGeneratedMoves(&Board.standardStartDark, &[_]u32{ 19, 26, 37, 44 });
+    try checkGeneratedMoves(&positions.standardStart, &[_]u32{ 19, 26, 37, 44 });
 }
 
 test "starting position, light to move" {
-    try checkGeneratedMoves(&Board.standardStartLight, &[_]u32{ 20, 29, 34, 43 });
+    try checkGeneratedMoves(&positions.standardStart.swapped(), &[_]u32{ 20, 29, 34, 43 });
 }
 
 test "empty board" {

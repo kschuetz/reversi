@@ -65,5 +65,8 @@ trait EngineApi extends js.Object {
 
   def generateRandomInt(bound: Int): Int = js.native
 
-  def initializeBoard(): Unit = js.native
+  /**
+   * @param positionId 0: empty, 1: standard start
+   */
+  def initializeBoard(positionId: Int): Unit = js.native
 }

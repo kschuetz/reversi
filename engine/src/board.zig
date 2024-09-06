@@ -13,13 +13,6 @@ pub const Board = struct {
         .opponent = BoardMask.empty,
     };
 
-    pub const standardStartDark: Board = .{
-        .player = BoardMask.squares(&[_]u32{ 28, 35 }),
-        .opponent = BoardMask.squares(&[_]u32{ 27, 36 }),
-    };
-
-    pub const standardStartLight: Board = standardStartDark.swapped();
-
     pub fn swapped(self: *const @This()) Board {
         return .{ .player = self.opponent, .opponent = self.player };
     }
