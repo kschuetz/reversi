@@ -28,12 +28,25 @@ final class Engine(engineApi: EngineApi) {
         BeginTurnEvaluation.Draw
       case _ =>
         val turnToPlay = decodePlayer(turn, engineApi.getCurrentPlayer())
-        val legalMoves = SquareIndex.All.foldLeft(Set.empty[SquareIndex]) {
+        val legalMoves = SquareIndex.All.
+          foldLeft(Set.empty[SquareIndex]) {
           case (acc, si) =>
             if engineApi.isLegalMove(si.toInt) != 0 then acc + si else acc
         }
         val powerBalance = Power(engineApi.getPowerBalance())
         BeginTurnEvaluation.InProgress(turnToPlay, legalMoves, powerBalance)
+    }
+  }
+
+  def initializeBoard: BoardState = {
+    engineApi.initializeBoard()
+    SquareIndex.All.foldLeft(BoardState.empty) {
+      case (acc, si) =>
+        engineApi.getSquareState(si.toInt) match {
+          case 1 => acc.set(si, Color.Dark)
+          case 2 => acc.set(si, Color.Light)
+          case _ => acc
+        }
     }
   }
 

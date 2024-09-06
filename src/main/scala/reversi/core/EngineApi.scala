@@ -64,4 +64,6 @@ trait EngineApi extends js.Object {
   def getPowerBalance(): Double = js.native
 
   def generateRandomInt(bound: Int): Int = js.native
+
+  def initializeBoard(): Unit = js.native
 }

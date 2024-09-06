@@ -63,7 +63,7 @@ final class Application(engine: Engine,
     resizeTimeoutHandle = dom.window.setTimeout(() => update(), 100)
   }
 
-  private def initialBoardState: BoardState = BoardState.StandardStart
+  private def initialBoardState: BoardState = engine.initializeBoard
 
   private def createInitialModel: ApplicationModel = {
     val boardState = initialBoardState

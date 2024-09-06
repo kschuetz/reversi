@@ -87,3 +87,7 @@ export fn generateRandomInt(bound: u32) u32 {
     registers.seed = out.new_seed;
     return out.value;
 }
+
+export fn initializeBoard() void {
+    registers.board = Board.standardStartDark;
+}
