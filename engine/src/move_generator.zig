@@ -1,5 +1,4 @@
 const common = @import("common.zig");
-const Color = common.Color;
 const SquareIndex = common.SquareIndex;
 const BoardMask = common.BoardMask;
 const Direction = common.Direction;
@@ -12,14 +11,15 @@ pub fn generateMoves(board: *const Board) BoardMask {
     const unoccupied = board.unoccupiedSquares();
     for (0..64) |i| {
         const si = SquareIndex.of(@truncate(i));
-        if (unoccupied.isSet(si)) {
+        const selected_square = si.select();
+        if (unoccupied.containsAll(selected_square)) {
             const neighbors = tables.neighbor_masks[si.value];
             for (0..7) |d| {
                 const dir: Direction = @enumFromInt(d);
                 if (dir.isInMask(neighbors)) {
                     const shift_dir = dir.opposite();
-                    if (walk(si, board, shift_dir)) {
-                        result = result.combine(si.select());
+                    if (walk(selected_square, board, shift_dir)) {
+                        result = result.combine(selected_square);
                         break;
                     }
                 }
@@ -30,19 +30,19 @@ pub fn generateMoves(board: *const Board) BoardMask {
     return result;
 }
 
-fn walk(square_index: SquareIndex, board: *const Board, shift_dir: Direction) bool {
+fn walk(selected_square: BoardMask, board: *const Board, shift_dir: Direction) bool {
     var op = board.opponent.shift(shift_dir);
-    if (op.isSet(square_index)) {
+    if (op.containsAll(selected_square)) {
         op = op.shift(shift_dir);
         var p = board.player.shift(shift_dir).shift(shift_dir);
-        var result = p.isSet(square_index);
+        var result = p.containsAll(selected_square);
         while (!result) {
-            if (!op.isSet(square_index)) {
+            if (!op.containsAll(selected_square)) {
                 return false;
             } else {
                 p = p.shift(shift_dir);
                 op = op.shift(shift_dir);
-                result = p.isSet(square_index);
+                result = p.containsAll(selected_square);
             }
         }
         return result;
