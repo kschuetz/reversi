@@ -40,15 +40,18 @@ final class Engine(engineApi: EngineApi) {
 
   def initializeBoard: BoardState = {
     engineApi.initializeBoard(EngineConstants.StandardStartPosition)
+    readBoard(Color.Dark)
+  }
+
+  def readBoard(turn: Color): BoardState =
     SquareIndex.All.foldLeft(BoardState.empty) {
       case (acc, si) =>
         engineApi.getSquareState(si.toInt) match {
-          case EngineConstants.Player => acc.set(si, Color.Dark)
-          case EngineConstants.Opponent => acc.set(si, Color.Light)
+          case EngineConstants.Player => acc.set(si, turn)
+          case EngineConstants.Opponent => acc.set(si, turn.opponent)
           case _ => acc
         }
     }
-  }
 
   private def encodeRelativeSquareState(turn: Color, color: Color): Int =
     if turn == color then 1 else 2

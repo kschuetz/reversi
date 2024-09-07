@@ -63,6 +63,8 @@ trait EngineApi extends js.Object {
    */
   def getPowerBalance(): Double = js.native
 
+  def executeMove(idx: Int): Unit = js.native
+
   def generateRandomInt(bound: Int): Int = js.native
 
   /**

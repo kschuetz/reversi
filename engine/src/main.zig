@@ -6,6 +6,7 @@ const BoardMask = common.BoardMask;
 const BeginTurnEvaluation = @import("begin_turn_evaluation.zig").BeginTurnEvaluation;
 const gameStateModule = @import("game_state.zig");
 const positions = @import("positions.zig");
+const move_executor = @import("move_executor.zig");
 
 // For interaction with frontend
 const Registers = struct {
@@ -79,6 +80,10 @@ export fn isLegalMove(square_index: u32) bool {
 
 export fn getPowerBalance() f64 {
     return registers.begin_turn_evaluation.power_balance;
+}
+
+export fn executeMove(square_index: u32) void {
+    move_executor.executeMove(&registers.board, SquareIndex.of(@truncate(square_index)));
 }
 
 export fn generateRandomInt(bound: u32) u32 {
