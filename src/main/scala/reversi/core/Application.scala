@@ -39,8 +39,7 @@ final class Application(engine: Engine,
     val driver = new GameDriver(engine)
 
     val screen = GameScreen($screenLayoutSettings.signal, model.$boardRotation.signal,
-      model.$gameState.signal, model.$pieceTransforms.signal,
-      model.$mouseInSquare.signal, model.squareInteractions.writer).amend(
+      model.$gameState.signal, model.$mouseInSquare.signal, model.squareInteractions.writer).amend(
       model.squareInteractions --> driver.squareInteractionsObserver(model.$gameState, model.$mouseInSquare))
     render(gameHost, screen)
   }
@@ -69,13 +68,12 @@ final class Application(engine: Engine,
     val boardState = initialBoardState
     val $gameState = Var(GameState(board = boardState,
       beginTurnEvaluation = engine.computeBeginTurnEvaluation(Color.Dark, boardState),
-      readyForInput = true))
-    val $pieceTransforms = Var(PieceTransforms.none)
+      readyForInput = true, pieceTransforms = PieceTransforms.none))
     val $mouseInSquare = Var(Option.empty[SquareIndex])
     val squareInteractions = EventBus[SquareInteraction]()
     val $boardRotation = Var(0d)
-    new ApplicationModel($gameState = $gameState, $pieceTransforms = $pieceTransforms,
-      squareInteractions = squareInteractions, $mouseInSquare = $mouseInSquare, $boardRotation = $boardRotation)
+    new ApplicationModel($gameState = $gameState, squareInteractions = squareInteractions,
+      $mouseInSquare = $mouseInSquare, $boardRotation = $boardRotation)
   }
 
 }

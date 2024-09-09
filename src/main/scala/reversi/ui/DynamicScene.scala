@@ -15,9 +15,9 @@ final class DynamicScene(PhysicalPiece: PhysicalPiece,
                          BoardOverlayButtons: BoardOverlayButtons) {
 
   def apply($gameState: Signal[GameState],
-            $basePieceTransforms: Signal[PieceTransforms],
             $mouseInSquare: Signal[Option[SquareIndex]],
             squareInteractions: WriteBus[SquareInteraction]): ReactiveSvgElement[SVGElement] = {
+    val $basePieceTransforms = $gameState.map(_.pieceTransforms)
     val $pieceTransforms = $basePieceTransforms.combineWithFn($gameState, $mouseInSquare) {
       case (base, gameState, mouseInSquare) =>
         val maybeGhost = for {

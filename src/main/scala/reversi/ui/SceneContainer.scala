@@ -14,11 +14,10 @@ final class SceneContainer(SceneFrame: SceneFrame) {
             $height: Signal[Pixels],
             $boardRotation: Signal[Double],
             $gameState: Signal[GameState],
-            $pieceTransforms: Signal[PieceTransforms],
             $mouseInSquare: Signal[Option[SquareIndex]],
             squareInteractions: WriteBus[SquareInteraction]): ReactiveSvgElement[SVGElement] =
     svg(idAttr := "game-scene",
       width <-- $width.map(_.toSvgString),
       height <-- $height.map(_.toSvgString),
-      SceneFrame($width, $height, $boardRotation, $gameState, $pieceTransforms, $mouseInSquare, squareInteractions))
+      SceneFrame($width, $height, $boardRotation, $gameState, $mouseInSquare, squareInteractions))
 }

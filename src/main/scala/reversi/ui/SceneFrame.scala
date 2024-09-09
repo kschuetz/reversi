@@ -16,7 +16,6 @@ final class SceneFrame(PhysicalBoard: PhysicalBoard,
             $height: Signal[Pixels],
             $boardRotation: Signal[Double],
             $gameState: Signal[GameState],
-            $pieceTransforms: Signal[PieceTransforms],
             $mouseInSquare: Signal[Option[SquareIndex]],
             squareInteractions: WriteBus[SquareInteraction]): ReactiveSvgElement[SVGElement] = {
     val $transform = $width.combineWithFn($height, $boardRotation) {
@@ -37,7 +36,7 @@ final class SceneFrame(PhysicalBoard: PhysicalBoard,
     g(Backdrop($width, $height),
       g(transform <-- $transform,
         PhysicalBoard(),
-        DynamicScene($gameState, $pieceTransforms, $mouseInSquare, squareInteractions)))
+        DynamicScene($gameState, $mouseInSquare, squareInteractions)))
   }
 
   private def Backdrop($width: Signal[Pixels],
