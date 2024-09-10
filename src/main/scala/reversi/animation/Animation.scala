@@ -3,49 +3,49 @@ package reversi.animation
 import reversi.core.SquareIndex
 
 sealed trait Animation {
-  def startTime: Double
+  def startTime: Instant
 
-  def duration: Double
+  def duration: Millis
 
-  def linearProgress(nowTime: Double): Double
+  def linearProgress(nowTime: Instant): Double
 
-  def hasStarted(nowTime: Double): Boolean = nowTime >= startTime
+  def hasStarted(nowTime: Instant): Boolean = nowTime >= startTime
 
-  def isExpired(nowTime: Double): Boolean
+  def isExpired(nowTime: Instant): Boolean
 
-  def isActive(nowTime: Double): Boolean = !isExpired(nowTime)
+  def isActive(nowTime: Instant): Boolean = !isExpired(nowTime)
 }
 
 object Animation {
 
   trait OneTimeAnimation extends Animation {
-    def linearProgress(nowTime: Double): Double =
+    def linearProgress(nowTime: Instant): Double =
       if nowTime <= startTime then 0.0
       else math.min((nowTime - startTime) / duration, 1.0)
 
-    def isExpired(nowTime: Double): Boolean =
+    def isExpired(nowTime: Instant): Boolean =
       (nowTime - startTime) >= duration
   }
 
   trait OneTimeDeferredAnimation extends OneTimeAnimation {
-    def startMovingTime: Double
+    def startMovingTime: Instant
 
-    def endTime: Double
+    def endTime: Instant
 
-    val duration: Double = endTime - startTime
-    val moveDuration: Double = endTime - startMovingTime
+    val duration: Millis = endTime - startTime
+    val moveDuration: Millis = endTime - startMovingTime
 
-    override def linearProgress(nowTime: Double): Double = {
-      if moveDuration <= 0 then 1.0
+    override def linearProgress(nowTime: Instant): Double = {
+      if moveDuration <= Millis(0) then 1.0
       else if nowTime <= startMovingTime then 0.0
       else math.min((nowTime - startMovingTime) / moveDuration, 1.0)
     }
 
-    override def isExpired(nowTime: Double): Boolean = nowTime >= endTime
+    override def isExpired(nowTime: Instant): Boolean = nowTime >= endTime
   }
 
   case class FlippingPiece(squareIndex: SquareIndex,
-                           startTime: Double,
-                           startMovingTime: Double,
-                           endTime: Double) extends OneTimeDeferredAnimation
+                           startTime: Instant,
+                           startMovingTime: Instant,
+                           endTime: Instant) extends OneTimeDeferredAnimation
 }
